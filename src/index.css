@@ -1,0 +1,84 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+menu {
+    padding: 0; 
+}
+ul.hr {
+    margin: 15px;
+    padding: 4px;
+}
+ul.hr li {
+    text-transform: capitalize;
+    display: inline-block; 
+    margin-right: 5px;
+    border: 1px solid #000;
+    padding: 3px;
+}
+ul.hr li a{
+    text-decoration: none;
+    color: black;
+}
+ul.hr li.selected {
+    background-color:yellow;
+}
+ul.hr li.selected a{
+    text-decoration: none;
+}
+element {
+    vertical-align: top;
+}
+div.rgt-cell {
+    display: block;
+}
+div.rgt-cell-inner {
+    padding-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+div.rgt-wrapper {
+    width: max-content;
+}
+div.rgt-cell-header-inner {
+    padding-right: 10px;
+}
+
+/*Black theme*/
+body {
+    background-color: black;
+    color: white;
+}
+
+div.rgt-container, div.rgt-cell-header-inner, div.rgt-cell, div.rgt-footer {
+    background-color: black;
+    color: white;
+}
+:root {
+     --rgt-border-color: #444 !important; 
+}
+ul.hr li {
+    border: 1px solid #fff; 
+}
+ul.hr li a{
+    color: white;
+}
+ul.hr li.selected {
+    color: black;
+}
+ul.hr li.selected a{
+    color: black;
+}
+td a{
+    text-decoration: none;
+    color: white;
+}
+/*Black theme end*/
