@@ -14,6 +14,12 @@ export default class Icon extends React.Component {
         const {data, zoom}= this.props;
 
         const ts = data.tileset;
+        if (!ts) return <div style={{
+                position: 'absolute', 
+                top: this.props.y, left: this.props.x,
+                width:32, height:32,
+                backgroundColor: 'red', opacity: 0.5,
+            }} />;
         const file = ts.name;
         const index = data.localid;
         const src = getSrc(file);

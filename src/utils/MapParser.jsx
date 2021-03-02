@@ -7,10 +7,16 @@ export default function parseXmlMap(r, name) {
         properties: [],
         tilesets: [],
         layers: {},
+        layerList: [],
         objectgroups: {
                 spawn: [],
+                rests: [],
+                signs: [],
                 keys: [],
+                scripts: [],
+                containers: [],
                 mapchange: [],
+                replaces: [],
                 other: [],
         },
     }
@@ -38,35 +44,56 @@ export default function parseXmlMap(r, name) {
     return map;
 }
 function parseObjectgroups(r, map) {
-
+    var objectgroup = { name: r?.attributes?.name };
     r.children?.forEach((e) => {
-
-        switch(e.attributes.type) {
-            case "spawn":
-              map.objectgroups.spawn.push(mapSpawn(e, map));
-              break;
-            case "keys":
-              map.objectgroups.keys.push(e);
-              break;
-            case "mapchange":
-              map.objectgroups.mapchange.push(e);
-              break;
-            default:
-              map.objectgroups.other.push(e);
+        if (e.name == 'properties') {
+            e.children?.forEach((p) => {
+                const key = p.attributes?.name;
+                const value = p?.attributes?.value;
+                objectgroup[key] = value;
+            });
+        } else {
+            switch(e.attributes.type) {
+                case "spawn":
+                  map.objectgroups.spawn.push(mapSpawn(e, map, objectgroup));
+                  break;
+                case "key":
+                  map.objectgroups.keys.push(e);
+                  break;
+                case "rest":
+                  map.objectgroups.rests.push(e);
+                  break;
+                case "sign":
+                  map.objectgroups.signs.push(e);
+                  break;
+                case "script":
+                  map.objectgroups.scripts.push(e);
+                  break;
+                case "container":
+                  map.objectgroups.containers.push(e);
+                  break;
+                case "mapchange":
+                  map.objectgroups.mapchange.push(mapMapchange(e, map, objectgroup));
+                  break;
+                case "replace":
+                  map.objectgroups.replaces.push(e);
+                  break;
+                default:
+                  console.warn(map);
+                  console.warn(e);
+                  map.objectgroups.other.push(e);
+            }
         }
     });
 }
 
-function mapSpawn(e, map) {
-    if (e.children?.length>1) {
-         console.warn("More then one children!");
-         console.warn(e);
-    }
-
+function mapSpawn(e, map, objectgroup) {
+    oneChildCheck(e);
 
     var spawn = {
         ...e.attributes,
         ...e.children[0]?.attributes,
+        objectgroup,
         width: e.attributes.width - 0,
         height: e.attributes.height - 0,
         x: e.attributes.x - 0,
@@ -100,6 +127,49 @@ function mapSpawn(e, map) {
     });
     return spawn;
 }
+
+function mapMapchange(e, map, objectgroup) {
+    oneChildCheck(e);
+
+    var event = {
+        ...e.attributes,
+        ...e.children[0]?.attributes,
+        objectgroup,
+        width: e.attributes.width - 0,
+        height: e.attributes.height - 0,
+        x: e.attributes.x - 0,
+        y: e.attributes.y - 0,
+    }
+    e.children[0]?.children?.forEach((c) => {
+        doIfDebug(() => {
+            if (event[c.attributes.name]) {
+                console.warn("More then one children '" + c.attributes.name + "':");
+                console.warn(event[c.attributes.name]);
+                console.warn(c);
+            }
+            if (c.name != "property") {
+                 console.warn("Unknown children!");
+                 console.warn(c);
+            }
+            if (c.children?.length) {
+                 console.warn("More then zero children!");
+                 console.warn(c);
+            }
+            if (["spawngroup", "quantity", "ignoreAreas", "active", "map", "place"].indexOf(c.attributes.name) == -1 ) {
+                 console.warn("Unknown children!");
+                 console.warn(c);
+            }
+            if (Object.keys(c.attributes).filter(x => !["name", "value", "type"].includes(x)).length) {
+                 console.warn("Unknown children!");
+                 console.warn(c);
+            }
+        });
+        event[c.attributes.name] = c.attributes.value;
+    });
+    return event;
+}
+
+
 function parseTileset(e, map, name) {
     var tileset = {
         //...e.attributes,
@@ -131,6 +201,10 @@ function parseLayerDebug(e, map, name) {
 }
 function parseLayer(e, map, name) {
     doIfDebug(() => parseLayerDebug(e, map, name));
+    map.layerList.push({
+        name: e.attributes.name.toLowerCase(),
+        visible: (e.attributes.visible != "0"),
+    });
     map.width = e.attributes.width - 0;
     map.height = e.attributes.height - 0;
     try {
@@ -150,25 +224,34 @@ function mapLayers(map) {
         map.field[y] = [];
         for (let x = 0; x < map.width; x++) {
             map.field[y][x] = {};
-            setTileByLayerXY(map, "ground", x, y);
-            setTileByLayerXY(map, "objects", x, y);
-            setTileByLayerXY(map, "above", x, y);
+            map.layerList.forEach((e) => setTileByLayerXY(map, e.name, x, y));
         }
     }
 }
 function setTileByLayerXY(map, layer, x, y) {
-    map.field[y][x][layer] = getTileById(map, map.layers[layer][y * map.width + x]);
+    if (map.layers[layer]) {
+        map.field[y][x][layer] = getTileById(map, layer, map.layers[layer][y * map.width + x]);
+    }
 }
-function getTileById(map, id) {
+function getTileById(map, layer, id) {
     if (id == 0)
         return;
     var tileset = map.tilesets.find((e) => ((id >= e.firstgid) && (id < (e.firstgid + e.tilecount))));
     if (!tileset) {
-        console.warn("No tileset for '" + map.name + "' " + id);
+        doIfDebug(() => console.warn("No tileset for '" + map.name + "." + layer + "' " + id));
     }
     return {
         id,
         tileset: tileset,
         localid: (id - tileset?.firstgid),
     };
+}
+
+function oneChildCheck(e) {
+    doIfDebug(() => {
+        if (e.children?.length>1) {
+             console.warn("More then one children!");
+             console.warn(e);
+        }
+    });
 }

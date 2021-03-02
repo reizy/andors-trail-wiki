@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { HashLink as Link } from 'react-router-hash-link';
 import MapIcon from './MapIcon'
 import Icon from '../Icon'
 import debug from '../../utils/debug'
+
+const bySpawnGroup = (a, b) => {return a.spawngroup.localeCompare(b.spawngroup)};
 
 export default class MonstersPage extends React.Component {
     constructor(props) {
@@ -12,42 +15,77 @@ export default class MonstersPage extends React.Component {
         if (!field) return "";
  
         return field.map((row, index)=>{
-            return <RenderRow key={index} data={row} y={index} zoom={zoom}/>
+            return <RenderRow key={index} data={row} layers={data.layerList} y={index} zoom={zoom}/>
         })
     }
-    getObjectgroupsData = function (data, zoom) {
-        var spawn = data?.spawn;
+
+    renderSpawn = function (spawn, zoom) {
         if (!spawn) return "";
- 
-        return spawn.map((row, index)=>{
-            if (!row.link) return "";
+        return spawn.sort(bySpawnGroup).map((row, index)=>{
+            const link = row.link;
+            if (!link) return "";
             const style = { 
                 marginLeft: row.x + (row.width - 32)/2, 
                 marginTop: row.y + (row.height - 32)/2 ,
-                position: 'absolute',
             };
-            if (this.props.location?.hash == '#'+row.spawngroup) {
-                style.border = "solid yellow 1px" 
+            var className = "mapspawn";
+            const hash = this.props.location?.hash;
+            if ((hash == '#'+row.name)||(hash == '#'+row.spawngroup)) {
+                className = className + " active"; 
             }
-            if (this.props.location?.hash == '#'+row.name) {
-                style.border = "solid yellow 1px" 
-            }
+            // row.quantity
+            const monster = link.monsters[index%link.monsters.length];
             return (
-                <div key ={index} style={style} >
-                    <Icon data={row.link.monsters[0]} zoom={zoom} noBackground="true" />
+                <div key ={index} style={style} className={className} title={monster.name}>
+                    <Icon data={monster} zoom={zoom} noBackground="true" />
                 </div>
             )
         })
     }
+    renderMapchange = function (event, zoom) {
+        if (!event) return "";
+
+        return event.map((row, index) => {
+
+            debug(row);
+            const style = { 
+                marginLeft: row.x, 
+                marginTop: row.y,
+                width: row.width,
+                height: row.height,
+            };
+            var className = "mapchange";
+            if (this.props.location?.hash == '#'+row.name) {
+                className = className + " active";
+            }
+            debug(style);
+            const href = "/map/" + row.map + "#" + row.place;
+            return (
+                <Link key ={index} style={style} title={row.map} to={href} className={className}/>
+            )
+        })
+    }
+
+    renderObjectgroups = function (data, zoom) {
+        return (
+                <div className="objectgroups">
+                    {this.renderSpawn(data?.spawn)}
+                    {this.renderMapchange(data?.mapchange)}
+                </div>
+            )
+        
+    }
+
     render() {
        var data = this.props.data;
+       var renderObjectgroupsData = this.props.renderObjectgroupsData;
        var zoom = this.props.zoom || 32;
 
        if (!data) {
            return "Wrong URL!"; 
        }
 
-       debug(this.props);
+       debug(this.props.data);
 
        var width = zoom * data.width;
        var height = zoom * data.height;
@@ -55,19 +93,23 @@ export default class MonstersPage extends React.Component {
        return (
             <div style={{backgroundColor:'white', width:width, height:height, position:'relative' }}>
                 {this.getRowsData(data, zoom)}
-                <div style={{position: 'absolute'}}>{this.getObjectgroupsData(data.objectgroups, zoom)}</div>
+                {renderObjectgroupsData && <div style={{position: 'absolute'}}>{this.renderObjectgroups(data.objectgroups, zoom)}</div>}
             </div>
        );
     }
 }
 const RenderRow = (props) => {
-    const {data, y, zoom} = props;
-    return data.map((tile, index) => {
-        return (<div key ={index}>
-                    {tile.ground && <MapIcon data={tile.ground} x={index*zoom} y={y*zoom} zoom={zoom}/>}
-                    {tile.objects && <MapIcon data={tile.objects} x={index*zoom} y={y*zoom} zoom={zoom}/>}
-                    {tile.above && <MapIcon data={tile.above} x={index*zoom} y={y*zoom} zoom={zoom}/>}
-                </div>          
-        ) 
+    const {data, layers, y, zoom} = props;
+    return data.map((tile, index) => <RenderCell data={tile} layers={layers} x={index*zoom} y={y*zoom} zoom={zoom} key ={index}/>) 
+}
+const RenderCell = (props) => {
+    const {data, layers, x, y, zoom} = props;
+    return layers
+            .filter((l)=>l.visible)
+            .filter((l)=>!l.name.startsWith("walkable"))
+            .map((l) => data[l.name])
+            .filter((ld)=>ld)
+            .map((ld, index) => {
+        return <MapIcon data={ld} x={x} y={y} zoom={zoom} key ={index}/>
     });
 }

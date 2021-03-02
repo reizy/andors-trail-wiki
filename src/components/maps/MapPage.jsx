@@ -30,7 +30,7 @@ export default class Page extends React.Component {
                 <Switch>
                     {!map && <GlobalMap data = { data } globalMap = { globalMap } />}
                     <PropsRoute path='/map/g' component={GlobalMap} data = { data } globalMap = { globalMap } />
-                    <LocalMap data = { data[map] } />
+                    <LocalMap data = { data[map] } renderObjectgroupsData="true"/>
                 </Switch>
             </div>
         );

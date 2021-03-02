@@ -1,4 +1,6 @@
 import React from 'react';
+import debug from '../../utils/debug';
+import MapsList from '../MapsList';
 import LinksTable from './LinksTable';
 
 const styles = {
@@ -29,12 +31,15 @@ export default class ExpandingName extends React.Component {
 
     render() {
         const data = this.props.data;
+
         const value = this.props.value;
         const links = data.droplistLink?.items;
-        if (!links) {
+        const spawnGroupLinks = data.spawnGroupLinks;
+        if (!links && !spawnGroupLinks) {
             return (
               <React.Fragment>
                     <div style={{ display:'flex'}} >
+                        <div style={{ width: 19}} />
                         <span style={styles.text}>{value}</span>
                     </div>
               </React.Fragment> );
@@ -47,6 +52,7 @@ export default class ExpandingName extends React.Component {
                     </div>
                     <div style={styles.table}>
                         {(this.state.expanded) && <LinksTable data={links}/>}
+                        {(this.state.expanded) && <MapsList data={spawnGroupLinks}/>}
                     </div>
 
               </React.Fragment> );

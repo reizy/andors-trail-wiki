@@ -81,4 +81,18 @@ td a{
     text-decoration: none;
     color: white;
 }
+
+.mapchange {
+    position: absolute;
+    border: solid red 1px;
+}
+.mapchange.active {
+    border-color: blue;
+}
+.mapspawn {
+    position: absolute;
+}
+.mapspawn.active {
+    border: solid yellow 2px;
+}
 /*Black theme end*/

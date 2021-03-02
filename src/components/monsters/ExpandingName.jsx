@@ -1,7 +1,7 @@
 import React from 'react';
 import debug from '../../utils/debug';
+import MapsList from '../MapsList';
 import LinksTable from './LinksTable';
-import MapsList from './MapsList';
 
 const styles = {
     text: {
@@ -30,7 +30,7 @@ export default class ExpandingName extends React.Component {
     }
 
     render() {
-        const { data } = this.props;
+        const data = this.props.data;
 
         const value = this.props.value;
         const links = data.droplistLink?.items;
