@@ -3,10 +3,11 @@ import GridTable from '@nadavshaar/react-grid-table';
 import '../../@nadavshaar/react-grid-table/dist/index.css';
 import IconCell from "../cells/IconCell"
 import NameCell from "./NameCell"
+import LocationCell from "./LocationCell"
 
-const sortStr = ({a, b, isAscending}) => {
-    let aa = a||"";
-    let bb = b||"";
+const sortLocations = ({a, b, isAscending}) => {
+    let aa = (a[0]?.maps&&a[0].maps[0]?.name)||"";
+    let bb = (b[0]?.maps&&b[0].maps[0]?.name)||"";
     if(aa > bb) return isAscending ? 1 : -1; 
     if(aa < bb) return isAscending ? -1 : 1; 
     return 0; 
@@ -68,9 +69,10 @@ export default class Table extends React.Component {
             },
             {
                 id: i++,
-                field: 'maxHP',
-                label: 'Location',
-                sort:sortInt,
+                field: 'spawnGroupLinks',
+                label: 'Locations',
+                sort: sortLocations,
+                cellRenderer: LocationCell,
                 width: '300px',
             },
          

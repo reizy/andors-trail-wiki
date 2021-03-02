@@ -4,7 +4,11 @@ import MapIcon from './MapIcon'
 import Icon from '../Icon'
 import debug from '../../utils/debug'
 
-const bySpawnGroup = (a, b) => {return a.spawngroup.localeCompare(b.spawngroup)};
+const bySpawnGroup = (a, b) => {
+    a = a.spawngroup||a.name||"";
+    b = b.spawngroup||b.name||"";
+    return a.localeCompare(b);
+};
 
 export default class MonstersPage extends React.Component {
     constructor(props) {

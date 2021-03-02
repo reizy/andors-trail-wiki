@@ -82,6 +82,13 @@ td a{
     color: white;
 }
 
+.nps-location-cell {
+    color: white;
+    text-transform: capitalize;
+    display: flex;
+    margin: 10px;
+}
+
 .mapchange {
     position: absolute;
     border: solid red 1px;

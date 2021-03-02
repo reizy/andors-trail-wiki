@@ -34,8 +34,7 @@ export default class ExpandingName extends React.Component {
 
         const value = this.props.value;
         const links = data.droplistLink?.items;
-        const spawnGroupLinks = data.spawnGroupLinks;
-        if (!links && !spawnGroupLinks) {
+        if (!links) {
             return (
               <React.Fragment>
                     <div style={{ display:'flex'}} >
@@ -52,7 +51,6 @@ export default class ExpandingName extends React.Component {
                     </div>
                     <div style={styles.table}>
                         {(this.state.expanded) && <LinksTable data={links}/>}
-                        {(this.state.expanded) && <MapsList data={spawnGroupLinks}/>}
                     </div>
 
               </React.Fragment> );
