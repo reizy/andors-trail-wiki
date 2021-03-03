@@ -262,22 +262,25 @@ export default class Main extends React.Component {
 
     render() {
         if (!this.state.items) return <Home />;
+        console.log(window);
+        const style = { minHeight: (window.innerHeight - 46), paddingTop:1 };
         return (
             <div>
-                <Switch>
-                    <Menu />
-                </Switch>
-                <Switch>
-                    
-                    <Route exact path='/' component={Home}/>
-                    <PropsRoute path='/items' component={ItemsPage} data = { this.state.items }/>
-                    <PropsRoute path='/conditions' component={ConditionsPage} data = { this.state.actorconditions }/>
-                    <PropsRoute path='/monsters' component={MonstersPage} data = { this.state.monsters }/>
-                    <PropsRoute path='/categories' component={ItemCategoriesTable} data = { this.state.itemcategories }/> 
-                    <PropsRoute path='/npc' component={NpcPage} data = { this.state.monsters }/> 
-                    <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }
-                        expanded={this.state.expandedSubMenu} toggleExpand={this.toggleExpandSubMenu}/> 
-                </Switch>
+                <div style={style}>
+                    <Switch>
+                        <Menu />
+                    </Switch>
+                    <Switch>
+                        <Route exact path='/' component={Home}/>
+                        <PropsRoute path='/items' component={ItemsPage} data = { this.state.items }/>
+                        <PropsRoute path='/conditions' component={ConditionsPage} data = { this.state.actorconditions }/>
+                        <PropsRoute path='/monsters' component={MonstersPage} data = { this.state.monsters }/>
+                        <PropsRoute path='/categories' component={ItemCategoriesTable} data = { this.state.itemcategories }/> 
+                        <PropsRoute path='/npc' component={NpcPage} data = { this.state.monsters }/> 
+                        <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }
+                            expanded={this.state.expandedSubMenu} toggleExpand={this.toggleExpandSubMenu}/> 
+                    </Switch>
+                </div>
                 <div className="signature">
                     <div style={{float:'left'}}>
                         2021, Powered by <a href="https://github.com/reizy/andors-trail-wiki">Reizy</a>

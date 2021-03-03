@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import GridTable from '@nadavshaar/react-grid-table';
 import '../../@nadavshaar/react-grid-table/dist/index.css';
 import IconCell from "../cells/IconCell"
+import { getDimentionById } from "../Icon"
 import NameCell from "./NameCell"
 import LocationCell from "./LocationCell"
+import TableAbsHeader from "../TableAbsHeader";
 
 const sortLocations = ({a, b, isAscending}) => {
     let aa = (a[0]?.maps&&a[0].maps[0]?.name)||"";
@@ -35,8 +37,11 @@ export default class Table extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state={};
+
         this.getColumns = this.getColumns.bind(this);
         this.getRows = this.getRows.bind(this);
+        this.id="NpcTable" + Math.random();
     }
 
     getRows  = function () {
@@ -45,6 +50,11 @@ export default class Table extends React.Component {
             data = data.filter((e)=>this.props.filter(e));
         }
         return data;
+    }
+
+    maxIconWidth = function () {
+        const width = this.rows.map((e) => getDimentionById(e.iconID).x).reduce((a, b) => Math.max(a, b), 32)+10;
+        return width+"px";
     }
 
     getColumns  = function () {
@@ -57,7 +67,7 @@ export default class Table extends React.Component {
                 pinned: true,
                 cellRenderer: IconCell,
                 sort:sortInt,
-                width: '50px',
+                width: this.maxIconWidth(),
             },
             {
                 id: i++,
@@ -79,17 +89,28 @@ export default class Table extends React.Component {
         ]
     }
 
+    componentDidMount() {
+        const height = document.getElementById(this.id).clientHeight;
+        const top = document.getElementById(this.id).offsetTop;
+        this.setState({ top, height });
+    }
+
     render() {
         GridTable.defaultProps.isPaginated = false;
         GridTable.defaultProps.minColumnResizeWidth = 30;
         GridTable.defaultProps.isVirtualScroll = false;
         GridTable.defaultProps.showSearch = false;
         GridTable.defaultProps.showColumnVisibilityManager = false;
+        this.rows = this.getRows();
+        const columns = this.getColumns()
 
-        return <GridTable 
-                    columns={this.getColumns()}
-                    rows={this.getRows()}
-                    onLoad={hashLinkScroll}/>;
+        return (<div id={this.id}>
+                    <TableAbsHeader columns={columns} size={this.state}/>
+                    <GridTable 
+                        columns={columns} 
+                        rows={this.rows} 
+                        onLoad={hashLinkScroll}/>
+                </div>)
     }
 }
 

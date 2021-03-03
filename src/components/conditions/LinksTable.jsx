@@ -15,9 +15,9 @@ export default class Table extends React.Component {
             ["Name", (o)=>{return RenderHref(o)}, { textAlign: 'left'} ],
             ["Type",(o)=>o.type],
             ["Aim",(o)=>o.aim],
-            ["Chance",(o)=>{return o.chance?(o.chance+"%"):""}],
-            ["Magnitude",(o)=>{return o.magnitude+"x"}],
-            ["Duration",(o)=>{return o.duration+" rounds"}],
+            ["Chance",(o)=>{return o.chance?(o.chance + "%"):""}],
+            ["Magnitude",(o)=>{return o.magnitude + "x"}],
+            ["Duration",(o)=>{return o.duration?(o.duration + " rounds"):""}],
         ];
     }
 

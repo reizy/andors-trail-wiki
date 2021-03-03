@@ -5,4 +5,4 @@ export function doIfDebug(f, force=false) {
     if (DEBUG||force) f();
 }
 
-const DEBUG=("production" !== process.env.NODE_ENV);
+const DEBUG=false;//("production" !== process.env.NODE_ENV);

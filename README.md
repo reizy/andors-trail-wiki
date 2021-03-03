@@ -17,6 +17,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 <p>If you want more information about game, please visit the [official game page on Google Play](https://play.google.com/store/apps/details?id=com.gpl.rpg.AndorsTrail) or the [main game forum](https://www.andorstrail.com).</p> 
 
-### Code Splitting
-
 

@@ -8,6 +8,7 @@ import ConditionsCell from "../cells/ConditionsCell"
 import OtherCell from "../cells/OtherCell"
 import RangeCell from "../cells/RangeCell"
 import NameCell from "./NameCell"
+import TableAbsHeader from "../TableAbsHeader";
 
 const sortStr = ({a, b, isAscending}) => {
     let aa = a||"";
@@ -39,8 +40,11 @@ export default class Table extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state={};
+
         this.getColumns = this.getColumns.bind(this);
         this.getRows = this.getRows.bind(this);
+        this.id="MonsterTable" + Math.random();
     }
 
     getRows  = function () {
@@ -56,6 +60,7 @@ export default class Table extends React.Component {
         const width = this.rows.map((e) => getDimentionById(e.iconID).x).reduce((a, b) => Math.max(a, b), 32)+10;
         return width+"px";
     }
+
     getColumns  = function () {
         var i = 1;
         return [
@@ -166,6 +171,12 @@ export default class Table extends React.Component {
         ]
     }
 
+    componentDidMount() {
+        const height = document.getElementById(this.id).clientHeight;
+        const top = document.getElementById(this.id).offsetTop;
+        this.setState({ top, height });
+    }
+
     render() {
 
         GridTable.defaultProps.isPaginated = false;
@@ -174,12 +185,16 @@ export default class Table extends React.Component {
         GridTable.defaultProps.showSearch = false;
         GridTable.defaultProps.showColumnVisibilityManager = false;
         this.rows = this.getRows();
-        debug(this.rows);
-        return <GridTable 
-                    columns={this.getColumns()} 
-                    rows={this.rows} 
-                    onLoad={hashLinkScroll} 
-                    key={this.props.title}/>;
+        const columns = this.getColumns()
+
+        return (<div id={this.id}>
+                    <TableAbsHeader columns={columns} size={this.state}/>
+                    <GridTable 
+                        columns={columns} 
+                        rows={this.rows} 
+                        onLoad={hashLinkScroll} 
+                        key={this.props.title}/>
+                </div>)
     }
 }
 

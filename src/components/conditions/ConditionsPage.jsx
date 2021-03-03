@@ -14,6 +14,7 @@ export default class ItemsPage extends React.Component {
                      {
                          <ConditionsTable data = { this.props.data.filter((e)=>e.isPositive)} />
                      }
+                     <br/>
                      Negative
                      {
                          <ConditionsTable data = { this.props.data.filter((e)=>!e.isPositive)}  />

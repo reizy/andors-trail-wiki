@@ -3,6 +3,7 @@ import GridTable from '@nadavshaar/react-grid-table';
 import '../../@nadavshaar/react-grid-table/dist/index.css';
 import IconCell from "../cells/IconCell";
 import NameCell from "./NameCell";
+import TableAbsHeader from "../TableAbsHeader";
 import JsonCell from "../cells/JsonCell";
 import OtherCell from "../cells/OtherCell";
 import RangeCell from "../cells/RangeCell";
@@ -46,8 +47,13 @@ export default class Table extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state={};
+
         this.getColumns = this.getColumns.bind(this);
         this.getRows = this.getRows.bind(this);
+
+        this.id="CondinionTable"+Math.random();
     }
 
     getRows  = function () {
@@ -235,6 +241,12 @@ export default class Table extends React.Component {
         ]
     }
 
+    componentDidMount() {
+        const height = document.getElementById(this.id).clientHeight;
+        const top = document.getElementById(this.id).offsetTop;
+        this.setState({ top, height });
+    }
+
     render() {
         GridTable.defaultProps.isPaginated = false;
         GridTable.defaultProps.minColumnResizeWidth = 30;
@@ -243,12 +255,16 @@ export default class Table extends React.Component {
         GridTable.defaultProps.showColumnVisibilityManager = false;
 
         this.rows = this.getRows();
+        const columns = this.getColumns()
 
-        return <GridTable 
-                    columns={this.getColumns()} 
-                    rows={this.rows} 
-                    onLoad={hashLinkScroll} 
-                    key={this.props.title}/>;
+        return (<div id={this.id}>
+                    <TableAbsHeader columns={columns} size={this.state}/>
+                    <GridTable 
+                        columns={columns} 
+                        rows={this.rows} 
+                        onLoad={hashLinkScroll} 
+                        key={this.props.title}/>
+                </div>)
 
     }
 }
