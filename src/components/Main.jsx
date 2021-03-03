@@ -11,12 +11,20 @@ import MonstersPage from './monsters/MonstersPage';
 import NpcPage from './npc/NpcPage';
 import MapPage from './maps/MapPage';
 import calculateCost from './CostCalculator';
+import expCalculator from './ExpCalculator';
 
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
-        this.state={};
+        this.state={
+            expandedSubMenu: false,
+        };
         this.temp={};
+        this.toggleExpandSubMenu = this.toggleExpandSubMenu.bind(this);
+    }
+
+    toggleExpandSubMenu() {
+        this.setState({ expandedSubMenu: !this.state.expandedSubMenu, });
     }
 
     getJsonResources=(resources)=>{
@@ -26,6 +34,7 @@ export default class Main extends React.Component {
       this.getJsonResource(resources.loadresource_actorconditions, "actorconditions", downcounter);
       this.getJsonResource(resources.loadresource_monsters, "monsters", downcounter);
       this.getJsonResource(resources.loadresource_droplists, "droplists", downcounter);
+      this.getJsonResource(resources.loadresource_conversationlists, "conversations", downcounter);
 
     }
 
@@ -36,7 +45,14 @@ export default class Main extends React.Component {
           that.getJsonData(path.replace('@','/'), name, that, downcounter);
       });
     }
-
+    countConditions = (effect, item, type) => {
+        var count =  effect?.addedConditions?.length||0;
+        count += effect?.conditionsTarget?.length||0;
+        count += effect?.conditionsSource?.length||0;
+        count += (effect?.increaseCurrentAP)?1:0; 
+        count += (effect?.increaseCurrentHP)?0.9:0; // for potions
+        return count;
+    }
     linkConditions = (effect, item, type) => {
         effect?.addedConditions?.forEach((e)=>this.linkCondition(e, item, type, "On source"));
         effect?.conditionsTarget?.forEach((e)=>this.linkCondition(e, item, type, "On target"));
@@ -60,7 +76,8 @@ export default class Main extends React.Component {
        return "/items/other#";
     }
     getMonsterRootLink = (monster) => {
-       if (monster.attackChance || monster.maxHP) return  "/monsters/" + monster.monsterClass + "#";
+       const monsterClass = monster.monsterClass || 'other' ;
+       if (monster.attackChance || monster.maxHP) return  "/monsters/" + monsterClass + "#";
        if (monster.droplistID) return "/npc/merchant#";
        if (monster.name.charAt(0).toUpperCase()<='G') return "/npc/a-g#";
        if (monster.name.charAt(0).toUpperCase()<='R') return "/npc/h-r#";
@@ -84,6 +101,7 @@ export default class Main extends React.Component {
         this.temp.maps.droplists = this.temp.droplists.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.items = this.temp.items.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.monsters = this.temp.monsters.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
+        this.temp.maps.conversations = this.temp.conversations.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.spawngroups = {};
 
         Object.values(this.props.maps).forEach((map)=>{
@@ -94,6 +112,9 @@ export default class Main extends React.Component {
                 spawn.link.key = key;
                 spawn.link.maps.push(map);
                 this.temp.maps.spawngroups[key] = spawn.link;
+            })
+            map.objectgroups?.signs?.forEach((sign)=> {
+                sign.message = this.temp.maps.conversations[sign.name]?.message;
             })
         })
 
@@ -108,6 +129,12 @@ export default class Main extends React.Component {
                 item.categoryLink = this.temp.maps.categories[item.category];
                 item.rootLink=this.getItemRootLink(item.categoryLink);
                 item.baseMarketCost=calculateCost(item, item.categoryLink.inventorySlot=="weapon");
+
+                item.conditionsCount = this.countConditions(item.equipEffect)
+                    + this.countConditions(item.hitEffect)
+                    + this.countConditions(item.hitReceivedEffect)
+                    + this.countConditions(item.killEffect)
+                    + this.countConditions(item.useEffect);
 
                 this.linkConditions(item.equipEffect, item, "equipEffect");
                 this.linkConditions(item.hitEffect, item, "hitEffect");
@@ -127,12 +154,18 @@ export default class Main extends React.Component {
                 this.temp.monsters.splice(index, 1, false);
             } else {
                 monster.iconBg = monster.unique? -0 : 1;
+                monster.exp = expCalculator(monster);
                 monster.droplistLink = this.temp.maps.droplists[monster.droplistID];
                 if (monster.droplistLink) {
                     monster.droplistLink.links = monster.droplistLink.links||[];
                     monster.droplistLink.links.push(monster);
                 }
                 monster.rootLink = this.getMonsterRootLink(monster);
+
+                monster.conditionsCount = this.countConditions(monster.hitEffect)
+                    + this.countConditions(monster.hitReceivedEffect)
+                    + this.countConditions(monster.killEffect);
+
                 this.linkConditions(monster.hitEffect, monster, "hitEffect");
                 this.linkConditions(monster.hitReceivedEffect, monster, "hitReceivedEffect");
                 this.linkConditions(monster.killEffect, monster, "killEffect");
@@ -151,6 +184,7 @@ export default class Main extends React.Component {
                         monster.spawnGroupLinks.push(spawngroupLink);
                     }
                 }
+
                 doIfDebug(() => {
                     if (monster.spawnGroupLinks.length == 0) {
                          console.warn("Monster have no spawn");
@@ -189,7 +223,9 @@ export default class Main extends React.Component {
             })
         })
 
-        this.temp.monsters.sort((a,b) => (a.name.localeCompare(b.name)));
+        this.temp.monsters.sort((a,b) => (a.id.localeCompare(b.id)));
+
+        debug(this.temp);
     }
     
     getJsonData=(fileName, name, that, downcounter)=>{
@@ -234,7 +270,8 @@ export default class Main extends React.Component {
                     <PropsRoute path='/monsters' component={MonstersPage} data = { this.state.monsters }/>
                     <PropsRoute path='/categories' component={ItemCategoriesTable} data = { this.state.itemcategories }/> 
                     <PropsRoute path='/npc' component={NpcPage} data = { this.state.monsters }/> 
-                    <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }/> 
+                    <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }
+                        expanded={this.state.expandedSubMenu} toggleExpand={this.toggleExpandSubMenu}/> 
                 </Switch>
             </div> 
         );

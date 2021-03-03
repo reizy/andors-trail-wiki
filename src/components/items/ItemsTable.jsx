@@ -5,7 +5,6 @@ import IconCell from "../cells/IconCell";
 import ConditionsCell from "../cells/ConditionsCell";
 import OtherCell from "../cells/OtherCell";
 import RangeCell from "../cells/RangeCell";
-import calculateCost from '../CostCalculator';
 import NameCell from "./NameCell";
 
 const sortStr = ({a, b, isAscending}) => {
@@ -94,7 +93,7 @@ export default class Table extends React.Component {
                 label: 'Atk Cost',
                 getValue: ({value, column}) => value?.increaseAttackCost,
                 sort:sortInt,
-                width: '115px',
+                width: '85px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseAttackCost),
             },
             {
@@ -104,7 +103,7 @@ export default class Table extends React.Component {
                 getValue: ({value, column}) => ((value?.increaseAttackDamage?.min||0) + (value?.increaseAttackDamage?.max||0))/2,
                 sort:sortInt,
                 cellRenderer: RangeCell("equipEffect", "increaseAttackDamage"),
-                width: '135px',
+                width: '120px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseAttackDamage),
             },
             {
@@ -113,7 +112,7 @@ export default class Table extends React.Component {
                 label: 'AC',
                 getValue: ({value, column}) => value?.increaseAttackChance,
                 sort:sortInt,
-                width: '80px',
+                width: '50px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseAttackChance),
             },
             {
@@ -122,7 +121,7 @@ export default class Table extends React.Component {
                 label: 'BC',
                 getValue: ({value, column}) => value?.increaseBlockChance,
                 sort:sortInt,
-                width: '80px',
+                width: '50px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseBlockChance),
             },
             {
@@ -131,7 +130,7 @@ export default class Table extends React.Component {
                 label: 'Crit',
                 getValue: ({value, column}) => value?.increaseCriticalSkill,
                 sort:sortInt,
-                width: '106px',
+                width: '60px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseCriticalSkill),
             },
             {
@@ -140,7 +139,7 @@ export default class Table extends React.Component {
                 label: 'Crit*',
                 getValue: ({value, column}) => value?.setCriticalMultiplier,
                 sort:sortInt,
-                width: '106px',
+                width: '55px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.setCriticalMultiplier),
             },
             {
@@ -149,7 +148,7 @@ export default class Table extends React.Component {
                 label: 'MaxHP',
                 getValue: ({value, column}) => value?.increaseMaxHP,
                 sort:sortInt,
-                width: '115px',
+                width: '75px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseMaxHP),
             },
             {
@@ -158,7 +157,7 @@ export default class Table extends React.Component {
                 label: 'MaxAP',
                 getValue: ({value, column}) => value?.increaseMaxAP,
                 sort:sortInt,
-                width: '115px',
+                width: '75px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseMaxAP),
             },
             {
@@ -176,7 +175,7 @@ export default class Table extends React.Component {
                 label: 'UC',
                 getValue: ({value, column}) => value?.increaseUseItemCost,
                 sort:sortInt,
-                width: '80px',
+                width: '50px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseUseItemCost),
             },
             {
@@ -185,7 +184,7 @@ export default class Table extends React.Component {
                 label: 'EC',
                 getValue: ({value, column}) => value?.increaseReequipCost,
                 sort:sortInt,
-                width: '80px',
+                width: '50px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseReequipCost),
             },
             {
@@ -194,32 +193,24 @@ export default class Table extends React.Component {
                 label: 'Dmg*%',
                 getValue: ({value, column}) => value?.setNonWeaponDamageModifier,
                 sort:sortInt,
-                width: '115px',
+                width: '75px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.setNonWeaponDamageModifier),
             },
             {
                 id: i++,
                 field: 'equipEffect',
-                label: 'Dmg_res',
+                label: 'Res',
                 getValue: ({value, column}) => value?.increaseDamageResistance,
                 sort:sortInt,
-                width: '120px',
+                width: '50px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.increaseDamageResistance),
             },
             {
                 id: i++,
-                field: 'categoryLink',
-                label: 'Category',
-                getValue: ({value, column}) => value?.name,
-                width: '140px',
-            },
-            {
-                id: i++,
-                field: 'equipEffect',
+                field: 'conditionsCount',
                 label: 'Conditions',
-                getValue: ({value, column}) => JSON.stringify(value?.addedConditions),
-                sort:sortStr,
-                width: '150px',
+                sort:sortInt,
+                width: '140px',
                 cellRenderer: ConditionsCell,
             },
             {
@@ -227,8 +218,15 @@ export default class Table extends React.Component {
                 field: 'baseMarketCost',
                 label: 'Price',
                 sort:sortInt,
-                width: '100px',
+                width: '60px',
                 visible: true,
+            },
+            {
+                id: i++,
+                field: 'categoryLink',
+                label: 'Category',
+                getValue: ({value, column}) => value?.name,
+                width: '180px',
             },
             {
                 id: i++,

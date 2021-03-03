@@ -103,10 +103,9 @@ export default class Table extends React.Component {
             },
             {
                 id: i++,
-                field: 'equipEffect',
+                field: 'conditionsCount',
                 label: 'Conditions',
-                getValue: ({value, column}) => JSON.stringify(value?.addedConditions),
-                sort:sortStr,
+                sort:sortInt,
                 width: '250px',
                 cellRenderer: ConditionsCell,
             },

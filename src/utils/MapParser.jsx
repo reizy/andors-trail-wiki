@@ -64,7 +64,7 @@ function parseObjectgroups(r, map) {
                   map.objectgroups.rests.push(e);
                   break;
                 case "sign":
-                  map.objectgroups.signs.push(e);
+                  map.objectgroups.signs.push(mapSign(e, map, objectgroup));
                   break;
                 case "script":
                   map.objectgroups.scripts.push(e);
@@ -100,29 +100,7 @@ function mapSpawn(e, map, objectgroup) {
         y: e.attributes.y - 0,
     }
     e.children[0]?.children?.forEach((c) => {
-        doIfDebug(() => {
-            if (spawn[c.attributes.name]) {
-                console.warn("More then one children '" + c.attributes.name + "':");
-                console.warn(spawn[c.attributes.name]);
-                console.warn(c);
-            }
-            if (c.name != "property") {
-                 console.warn("Unknown children!");
-                 console.warn(c);
-            }
-            if (c.children?.length) {
-                 console.warn("More then zero children!");
-                 console.warn(c);
-            }
-            if (["spawngroup", "quantity", "ignoreAreas", "active", "map", "place"].indexOf(c.attributes.name) == -1 ) {
-                 console.warn("Unknown children!");
-                 console.warn(c);
-            }
-            if (Object.keys(c.attributes).filter(x => !["name", "value", "type"].includes(x)).length) {
-                 console.warn("Unknown children!");
-                 console.warn(c);
-            }
-        });
+        propertyCheck(c, spawn, ["spawngroup", "quantity", "ignoreAreas", "active"]);
         spawn[c.attributes.name] = c.attributes.value;
     });
     return spawn;
@@ -139,36 +117,29 @@ function mapMapchange(e, map, objectgroup) {
         height: e.attributes.height - 0,
         x: e.attributes.x - 0,
         y: e.attributes.y - 0,
+        xxx:e
     }
     e.children[0]?.children?.forEach((c) => {
-        doIfDebug(() => {
-            if (event[c.attributes.name]) {
-                console.warn("More then one children '" + c.attributes.name + "':");
-                console.warn(event[c.attributes.name]);
-                console.warn(c);
-            }
-            if (c.name != "property") {
-                 console.warn("Unknown children!");
-                 console.warn(c);
-            }
-            if (c.children?.length) {
-                 console.warn("More then zero children!");
-                 console.warn(c);
-            }
-            if (["spawngroup", "quantity", "ignoreAreas", "active", "map", "place"].indexOf(c.attributes.name) == -1 ) {
-                 console.warn("Unknown children!");
-                 console.warn(c);
-            }
-            if (Object.keys(c.attributes).filter(x => !["name", "value", "type"].includes(x)).length) {
-                 console.warn("Unknown children!");
-                 console.warn(c);
-            }
-        });
+        propertyCheck(c, event, ["place", "map"]);
         event[c.attributes.name] = c.attributes.value;
     });
     return event;
 }
 
+function mapSign(e, map, objectgroup) {
+    noChildCheck(e);
+
+    var event = {
+        ...e.attributes,
+        objectgroup,
+        width: e.attributes.width - 0,
+        height: e.attributes.height - 0,
+        x: e.attributes.x - 0,
+        y: e.attributes.y - 0,
+    }
+  
+    return event;
+}
 
 function parseTileset(e, map, name) {
     var tileset = {
@@ -249,9 +220,42 @@ function getTileById(map, layer, id) {
 
 function oneChildCheck(e) {
     doIfDebug(() => {
-        if (e.children?.length>1) {
+        if (e.children?.length > 1) {
              console.warn("More then one children!");
              console.warn(e);
         }
-    });
+    }, true);
+}
+function noChildCheck(e) {
+    doIfDebug(() => {
+        if (e.children?.length > 0) {
+             console.warn("More then zero children!");
+             console.warn(e);
+        }
+    }, true);
+}
+function propertyCheck(c, e, names) {
+        doIfDebug(() => {
+            if (e[c.attributes.name]) {
+                console.warn("More then one children '" + c.attributes.name + "':");
+                console.warn(e[c.attributes.name]);
+                console.warn(c);
+            }
+            if (c.name != "property") {
+                 console.warn("Unknown children!");
+                 console.warn(c);
+            }
+            if (c.children?.length) {
+                 console.warn("More then zero children!");
+                 console.warn(c);
+            }
+            if (names.indexOf(c.attributes.name) == -1 ) {
+                 console.warn("Unknown children!");
+                 console.warn(c);
+            }
+            if (Object.keys(c.attributes).filter(x => !["name", "value", "type"].includes(x)).length) {
+                 console.warn("Unknown children!");
+                 console.warn(c);
+            }
+        }, true);
 }

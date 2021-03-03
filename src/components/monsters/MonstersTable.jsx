@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import GridTable from '@nadavshaar/react-grid-table';
 import '../../@nadavshaar/react-grid-table/dist/index.css';
+import debug from '../../utils/debug'
 import IconCell from "../cells/IconCell"
 import { getDimentionById } from "../Icon"
 import ConditionsCell from "../cells/ConditionsCell"
@@ -44,6 +45,7 @@ export default class Table extends React.Component {
 
     getRows  = function () {
         var data = this.props.data;
+
         if (this.props.filter) {
             data = data.filter((e)=>this.props.filter(e));
         }
@@ -79,14 +81,14 @@ export default class Table extends React.Component {
                 field: 'maxHP',
                 label: 'HP',
                 sort:sortInt,
-                width: '75px',
+                width: '50px',
             },
             {
                 id: i++,
                 field: 'attackChance',
                 label: 'AC',
                 sort:sortInt,
-                width: '75px',
+                width: '50px',
             },
             {
                 id: i++,
@@ -95,70 +97,69 @@ export default class Table extends React.Component {
                 getValue: ({value, column}) => ((value?.min||0) + (value?.max||0))/2,
                 sort:sortInt,
                 cellRenderer: RangeCell("attackDamage"),
-                width: '135px',
+                width: '120px',
             },
             {
                 id: i++,
                 field: 'criticalSkill',
                 label: 'Crit',
                 sort:sortInt,
-                width: '85px',
+                width: '60px',
             },
             {
                 id: i++,
                 field: 'criticalMultiplier',
                 label: 'Crit*',
                 sort:sortInt,
-                width: '85px',
+                width: '55px',
             },
             {
                 id: i++,
                 field: 'blockChance',
                 label: 'BC',
                 sort:sortInt,
-                width: '75px',
+                width: '50px',
             },
             {
                 id: i++,
                 field: 'damageResistance',
-                label: 'Dmg res',
+                label: 'Res',
                 sort:sortInt,
-                width: '115px',
+                width: '50px',
             },
             {
                 id: i++,
                 field: 'maxAP',
                 label: 'AP',
                 sort:sortInt,
-                width: '75px',
+                width: '50px',
             },
             {
                 id: i++,
                 field: 'attackCost',
-                label: 'Attack Cost',
+                label: 'Atk Cost',
                 sort:sortInt,
-                width: '135px',
+                width: '85px',
             },
             {
                 id: i++,
                 field: 'moveCost',
                 label: 'Move Cost',
                 sort:sortInt,
-                width: '130px',
+                width: '100px',
             },
             {
                 id: i++,
-                field: 'moveCost',
+                field: 'exp',
                 label: 'XP',
                 sort:sortInt,
                 width: '75px',
             },
             {
                 id: i++,
-                field: 'equipEffect',
+                field: 'conditionsCount',
                 label: 'Conditions',
-                getValue: ({value, column}) => JSON.stringify(value?.addedConditions),
-                sort:sortStr,
+                sort:sortInt,
                 width: '130px',
                 cellRenderer: ConditionsCell,
             },
@@ -173,7 +174,7 @@ export default class Table extends React.Component {
         GridTable.defaultProps.showSearch = false;
         GridTable.defaultProps.showColumnVisibilityManager = false;
         this.rows = this.getRows();
-
+        debug(this.rows);
         return <GridTable 
                     columns={this.getColumns()} 
                     rows={this.rows} 

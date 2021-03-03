@@ -1,9 +1,8 @@
 export default function debug(msg) {
-    //if (DEBUG) 
-        console.log(msg);
+    if (DEBUG) console.warn(msg);
 }
-export function doIfDebug(f) {
-    if (DEBUG) f();
+export function doIfDebug(f, force=false) {
+    if (DEBUG||force) f();
 }
 
 const DEBUG=false;//("production" !== process.env.NODE_ENV);

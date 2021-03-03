@@ -49,7 +49,8 @@ div.rgt-wrapper {
     width: max-content;
 }
 div.rgt-cell-header-inner {
-    padding-right: 10px;
+    padding-left: 5px;
+    padding-right: 1px;
 }
 
 /*Black theme*/
@@ -101,5 +102,8 @@ td a{
 }
 .mapspawn.active {
     border: solid yellow 2px;
+}
+.sign {
+    position: absolute;
 }
 /*Black theme end*/

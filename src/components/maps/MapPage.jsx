@@ -9,6 +9,7 @@ export default class Page extends React.Component {
     constructor(props) {
         super(props);
     }
+
     getSegmentLinks = function (data, pathname) {
         var segments = data.segments;
         if (!segments) return "";
@@ -25,7 +26,8 @@ export default class Page extends React.Component {
         return (
             <div>
                 <ul className="hr">
-                    {this.getSegmentLinks(globalMap, location.pathname)}
+                    <img src="/image/sort_desc.png" style={{float:'left', marginTop:-10}} onClick={this.props.toggleExpand}/>
+                    {(this.props.expanded) && this.getSegmentLinks(globalMap, location.pathname)}
                 </ul>
                 <Switch>
                     {!map && <GlobalMap data = { data } globalMap = { globalMap } />}

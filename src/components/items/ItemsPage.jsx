@@ -16,14 +16,15 @@ export default class ItemsPage extends React.Component {
         return (
             <div>
                 <ul className="hr">
-                        {LiLink("/items/", "body", this.props.location.pathname)}
+                        {LiLink("/items/", "body", this.props.location.pathname, 'Armor')}
                         {LiLink("/items/", "weapon", this.props.location.pathname)}
                         {LiLink("/items/", "shield", this.props.location.pathname)}
-                        {LiLink("/items/", "head", this.props.location.pathname)}
-                        {LiLink("/items/", "feet", this.props.location.pathname)}
-                        {LiLink("/items/", "leftring", this.props.location.pathname)}
-                        {LiLink("/items/", "neck", this.props.location.pathname)}
-                        {LiLink("/items/", "use", this.props.location.pathname)}
+                        {LiLink("/items/", "head", this.props.location.pathname, 'Helm')}
+                        {LiLink("/items/", "hand", this.props.location.pathname, 'Glove')}
+                        {LiLink("/items/", "feet", this.props.location.pathname, 'Boot')}
+                        {LiLink("/items/", "leftring", this.props.location.pathname, 'ring')}
+                        {LiLink("/items/", "neck", this.props.location.pathname, 'Necklace')}
+                        {LiLink("/items/", "use", this.props.location.pathname, 'Usable')}
                         {LiLink("/items/", "other", this.props.location.pathname)}
                 </ul>
                 <Switch>

@@ -21,17 +21,22 @@ export default class MonstersPage extends React.Component {
                 width: row.link.width * zoom,
                 height: row.link.height * zoom,
             };
+            var style2 = {
+                width: row.link.width * zoom,
+                height: row.link.height * zoom,
+            };
             const href = "/map/" + row.id;
+            const src = "/backgrounds/" + row.id + ".jpg";
             return (
                 <Link style={style} title={row.id} key={index} to={href}>
-                    {(index<9) && <LocalMap data = {row.link} zoom = {zoom} />}
+                    <img style={style2} src={src} />
                 </Link>
             )
         })
     }
     render() {
        const { globalMap, location } = this.props;
-       debug(this.props);
+
        var segment = location.pathname.substring("/map/g/".length);
        if (!segment){
            segment = 'world1';

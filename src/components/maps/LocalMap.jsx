@@ -17,41 +17,57 @@ export default class MonstersPage extends React.Component {
     getRowsData = function (data, zoom) {
         var field = data.field;
         if (!field) return "";
- 
+
+        const aboveIndex = data.layerList.map((e) => e.name).indexOf("above");
+        var layers = data.layerList.filter((e,i) => (i < aboveIndex));
         return field.map((row, index)=>{
-            return <RenderRow key={index} data={row} layers={data.layerList} y={index} zoom={zoom}/>
+            return <RenderRow key={index} data={row} layers={layers} y={index} zoom={zoom}/>
+        })
+    }
+    getRowsDataAbove = function (data, zoom) {
+        var field = data.field;
+        if (!field) return "";
+ 
+        const aboveIndex = data.layerList.map((e) => e.name).indexOf("above");
+        var layers = data.layerList.filter((e,i) => (i >= aboveIndex));
+        return field.map((row, index)=>{
+            return <RenderRow key={index} data={row} layers={layers} y={index} zoom={zoom}/>
         })
     }
 
     renderSpawn = function (spawn, zoom) {
         if (!spawn) return "";
-        return spawn.sort(bySpawnGroup).map((row, index)=>{
+        var index = 0;
+        return spawn.sort(bySpawnGroup).map((row) => {
             const link = row.link;
             if (!link) return "";
-            const style = { 
-                marginLeft: row.x + (row.width - 32)/2, 
-                marginTop: row.y + (row.height - 32)/2 ,
-            };
+
             var className = "mapspawn";
             const hash = this.props.location?.hash;
             if ((hash == '#'+row.name)||(hash == '#'+row.spawngroup)) {
                 className = className + " active"; 
             }
-            // row.quantity
-            const monster = link.monsters[index%link.monsters.length];
-            return (
-                <div key ={index} style={style} className={className} title={monster.name}>
-                    <Icon data={monster} zoom={zoom} noBackground="true" />
-                </div>
-            )
+            const quantity = (row.quantity || 1) - 0;
+            const result = [];
+            for (let i = 0; i < quantity; i++) {
+                index++;
+                const style = { 
+                    marginLeft: row.x + getRandomInt(row.width - 32), 
+                    marginTop: row.y + getRandomInt(row.height - 32),
+                };
+                const monster = link.monsters[index%link.monsters.length];
+                result.push(
+                    <div key ={index} style={style} className={className} title={monster.name}>
+                        <Icon data={monster} zoom={zoom} noBackground="true" />
+                    </div>
+                )
+            }
+            return result;
         })
     }
-    renderMapchange = function (event, zoom) {
-        if (!event) return "";
-
-        return event.map((row, index) => {
-
-            debug(row);
+    renderMapchange = function (events, zoom) {
+        if (!events) return "";
+        return events.map((row, index) => {
             const style = { 
                 marginLeft: row.x, 
                 marginTop: row.y,
@@ -62,11 +78,24 @@ export default class MonstersPage extends React.Component {
             if (this.props.location?.hash == '#'+row.name) {
                 className = className + " active";
             }
-            debug(style);
             const href = "/map/" + row.map + "#" + row.place;
             return (
                 <Link key ={index} style={style} title={row.map} to={href} className={className}/>
             )
+        })
+    }
+
+    renderSign = function (signs, zoom) {
+        if (!signs) return "";
+
+        return signs.map((row, index) => {
+            const style = { 
+                marginLeft: row.x, 
+                marginTop: row.y,
+                width: row.width,
+                height: row.height,
+            };
+            return <div key ={index} style={style} title={row.message} className="sign"/>;
         })
     }
 
@@ -75,6 +104,7 @@ export default class MonstersPage extends React.Component {
                 <div className="objectgroups">
                     {this.renderSpawn(data?.spawn)}
                     {this.renderMapchange(data?.mapchange)}
+                    {this.renderSign(data?.signs)}
                 </div>
             )
         
@@ -82,14 +112,14 @@ export default class MonstersPage extends React.Component {
 
     render() {
        var data = this.props.data;
-       var renderObjectgroupsData = this.props.renderObjectgroupsData;
+       var renderOG = this.props.renderObjectgroupsData;
        var zoom = this.props.zoom || 32;
 
        if (!data) {
            return "Wrong URL!"; 
        }
 
-       debug(this.props.data);
+       renderOG && debug(this.props.data);
 
        var width = zoom * data.width;
        var height = zoom * data.height;
@@ -97,7 +127,8 @@ export default class MonstersPage extends React.Component {
        return (
             <div style={{backgroundColor:'white', width:width, height:height, position:'relative' }}>
                 {this.getRowsData(data, zoom)}
-                {renderObjectgroupsData && <div style={{position: 'absolute'}}>{this.renderObjectgroups(data.objectgroups, zoom)}</div>}
+                {this.getRowsDataAbove(data, zoom)}
+                {renderOG && <div style={{position: 'absolute'}}>{this.renderObjectgroups(data.objectgroups, zoom)}</div>}
             </div>
        );
     }
@@ -116,4 +147,7 @@ const RenderCell = (props) => {
             .map((ld, index) => {
         return <MapIcon data={ld} x={x} y={y} zoom={zoom} key ={index}/>
     });
+}
+function getRandomInt(max) {
+  return Math.floor(Math.random() * (max + 1)); //Максимум и минимум включаются
 }

@@ -57,9 +57,10 @@ const onImgLoad = (id, rowIndex, index) => {
 const showCondition = (prefix, rowIndex) => {
     return (row, index) => {
         var title = prefix;
-        if (row.chance) title += " ("+row.chance +"%)";
-        title += ": " + row.link.name + " " + row.magnitude;
-        if (row.duration) title += "x" + row.duration;
+        if (row.chance) title += row.chance +"% chance of ";
+        title += row.link.name ;
+        if (row.magnitude > 1) title += " x" + row.magnitude;
+        if (row.duration) title += " (" + row.duration + " rounds)";
         const href = "/conditions#"+row.link.id;
         const id = getImgId(row.link.iconID, rowIndex, index);
         return <Link style={styles.aimg} title={title} to={href} key={id} >
@@ -74,7 +75,7 @@ const getRowsData = (prefix, values, rowIndex) => {
 }
 const getTextData = (prefix, value, text, rowIndex) => {
     if (!value) return "";
-    return <span style={styles.text} title={prefix + ":" + value.min + "-" + value.max}>{text}</span>;
+    return <span style={styles.text} title={prefix + " " + value.min + "-" + value.max}>{text}</span>;
 }
 
 const ConditionsCell = ({tableManager, value, onChange, isEdit, data, column, rowIndex, searchText, isFirstEditableCell}) => {
@@ -83,16 +84,16 @@ const ConditionsCell = ({tableManager, value, onChange, isEdit, data, column, ro
         <div style={styles.root}>
             {
                 <React.Fragment>
-                    {getRowsData("on equip", data.equipEffect?.addedConditions, rowIndex)}
-                    {getRowsData("on hit", data.hitEffect?.conditionsTarget, rowIndex)}
-                    {getRowsData("on hit get", data.hitEffect?.conditionsSource, rowIndex)}
-                    {getTextData("on hit get", data.hitEffect?.increaseCurrentHP, "+HP", rowIndex)}
-                    {getRowsData("on kill", data.killEffect?.conditionsSource, rowIndex)}
-                    {getTextData("on kill", data.killEffect?.increaseCurrentHP, "+HP", rowIndex)}
-                    {getTextData("on kill", data.killEffect?.increaseCurrentAP, "+AP", rowIndex)}
-                    {getRowsData("when hited", data.hitReceivedEffect?.conditionsSource, rowIndex)}
-                    {getRowsData("attaker get", data.hitReceivedEffect?.conditionsTarget, rowIndex)}
-                    {getRowsData("on use", data.useEffect?.conditionsSource, rowIndex)}
+                    {getRowsData("On equip\n ", data.equipEffect?.addedConditions, rowIndex)}
+                    {getRowsData("On hit\n On target\n  ", data.hitEffect?.conditionsTarget, rowIndex)}
+                    {getRowsData("On hit\n On source\n  ", data.hitEffect?.conditionsSource, rowIndex)}
+                    {getTextData("On hit\n On source\n  ", data.hitEffect?.increaseCurrentHP, "+HP", rowIndex)}
+                    {getRowsData("On kill\n On source\n  ", data.killEffect?.conditionsSource, rowIndex)}
+                    {getTextData("On kill\n On source\n  ", data.killEffect?.increaseCurrentHP, "+HP", rowIndex)}
+                    {getTextData("On kill\n On source\n  ", data.killEffect?.increaseCurrentAP, "+AP", rowIndex)}
+                    {getRowsData("On hit received\n On source\n  ", data.hitReceivedEffect?.conditionsSource, rowIndex)}
+                    {getRowsData("On hit received\n On target\n  ", data.hitReceivedEffect?.conditionsTarget, rowIndex)}
+                    {getRowsData("On use\n ", data.useEffect?.conditionsSource, rowIndex)}
                 </React.Fragment>
             }
         </div>
