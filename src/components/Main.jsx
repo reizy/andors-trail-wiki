@@ -210,6 +210,8 @@ export default class Main extends React.Component {
         })
         this.props.globalMap.segments.forEach((segment)=>{
             segment.rootLink = "/map/g/";
+            segment.maxY = -9999;
+            segment.minY = +9999;
             segment.maps.forEach((map)=>{
                 map.link = this.props.maps[map.id];
                 if (map.link.segmentLink && (map.link.segmentLink.id != segment.id)) {
@@ -220,7 +222,10 @@ export default class Main extends React.Component {
                     map.link.globalMapLink = map;
                     map.link.segmentLink = segment;
                 }
+                segment.maxY = Math.max(segment.maxY, map.y + map.link.height);
+                segment.minY = Math.min(segment.minY, map.y);
             })
+            segment.height = segment.maxY - segment.minY;
         })
 
         this.temp.monsters.sort((a,b) => (a.id.localeCompare(b.id)));
@@ -273,6 +278,12 @@ export default class Main extends React.Component {
                     <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }
                         expanded={this.state.expandedSubMenu} toggleExpand={this.toggleExpandSubMenu}/> 
                 </Switch>
+                <div className="signature">
+                    <div style={{float:'left'}}>
+                        2021, Powered by <a href="https://github.com/reizy/andors-trail-wiki">Reizy</a>
+                    </div>
+                    <div style={{float:'right'}}>Game version 0.7.13</div>
+                </div>
             </div> 
         );
     }

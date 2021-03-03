@@ -51,8 +51,10 @@ export default class MonstersPage extends React.Component {
                     (data.maps.length >   3) ? 8 :
                     10;
 
+       const style = { position:'relative', height:(data.height * zoom)};
+
        return (
-            <div style={{ position:'relative' }}>
+            <div style={style}>
                 {this.getRowsData(data, zoom)}
             </div>
        );

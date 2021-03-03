@@ -13,6 +13,12 @@ code {
 menu {
     padding: 0; 
 }
+.signature {
+    padding: 10px;
+    margin-top: 10px;
+    height: 25px;
+}
+
 ul.hr {
     margin: 15px;
     padding: 4px;
@@ -53,6 +59,29 @@ div.rgt-cell-header-inner {
     padding-right: 1px;
 }
 
+.nps-location-cell {
+    text-transform: capitalize;
+    display: flex;
+    margin: 10px;
+}
+
+.mapchange {
+    position: absolute;
+    border: solid red 1px;
+}
+.mapchange.active {
+    border-color: blue;
+}
+.mapspawn {
+    position: absolute;
+}
+.mapspawn.active {
+    border: solid yellow 2px;
+}
+.sign {
+    position: absolute;
+}
+
 /*Black theme*/
 body {
     background-color: black;
@@ -75,35 +104,19 @@ ul.hr li a{
 ul.hr li.selected {
     color: black;
 }
-ul.hr li.selected a{
+ul.hr li.selected a {
     color: black;
 }
 td a{
     text-decoration: none;
     color: white;
 }
+a {
+    color: white;
+}
 
 .nps-location-cell {
     color: white;
-    text-transform: capitalize;
-    display: flex;
-    margin: 10px;
 }
 
-.mapchange {
-    position: absolute;
-    border: solid red 1px;
-}
-.mapchange.active {
-    border-color: blue;
-}
-.mapspawn {
-    position: absolute;
-}
-.mapspawn.active {
-    border: solid yellow 2px;
-}
-.sign {
-    position: absolute;
-}
 /*Black theme end*/
