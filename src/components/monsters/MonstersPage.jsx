@@ -37,7 +37,7 @@ export default class MonstersPage extends React.Component {
                     {ItemRoute("ghost", this.props.data)}
                     <PropsRoute  path="/monsters/other" component={MonstersTable}
                         data = {this.props.data} title= "Other"
-                        filter = {(e)=>(!e.monsterClass)}
+                        filter = {(e)=>(e.rootLink=='/monsters/other#')}
                     />
                 </Switch>
                  </div> 

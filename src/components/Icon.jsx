@@ -54,8 +54,8 @@ export default class Icon extends React.Component {
 
                         <Link style={style} 
                            title={data.displaytype} 
-                           to={href}
-                           id={data.id}>
+                           to={href}>
+                                <div id={data.id} className="TableAncor"/>
                                 <img id={key} 
                                     src={src} 
                                     onLoad={onImgLoad(index, d, key)}

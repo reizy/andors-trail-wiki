@@ -246,9 +246,8 @@ export default class Table extends React.Component {
     }
 
     componentDidMount() {
-        const height = document.getElementById(this.id).clientHeight;
         const top = document.getElementById(this.id).offsetTop;
-        this.setState({ top, height });
+        this.setState({ top, height: 999999 });
     }
 
     render() {

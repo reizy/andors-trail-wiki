@@ -33,7 +33,7 @@ export default class TableAbsHeader extends React.Component {
         const columns = this.props.columns
         const size = this.props.size
         const bot = this.props.bot
-        
+
         if (window.scrollY < size.top) return "";
         if (window.scrollY > (size.top + size.height - 50)) return "";
 

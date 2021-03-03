@@ -26,9 +26,7 @@ export default class Table extends React.Component {
         })
     }
 
-    getRowsData = function () {
-        var items = this.props.data;
-        if (!items) return "";
+    getRowsData = function (items) {
         if (this.props.filter && this.props.filter.length>0) {
             items = items.filter((item)=>this.props.filter.indexOf(item.category) > -1);
         }
@@ -39,10 +37,12 @@ export default class Table extends React.Component {
     }
 
     render() {
+        var items = this.props.data;
+        if (!items?.length) return "";
         return (
             <table style={{width: 400}} >
                 <thead style={{display: 'none'}}><tr>{this.getHeader()}</tr></thead>
-                <tbody>{this.getRowsData()}</tbody>
+                <tbody>{this.getRowsData(items)}</tbody>
             </table>
         );
     }

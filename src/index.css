@@ -82,7 +82,10 @@ div.rgt-cell-header-inner {
 .sign {
     position: absolute;
 }
-
+.TableAncor {
+    margin-top: -60px;
+    position: absolute;
+}
 .absHeader {
     opacity: 1;
     background: black;
