@@ -75,10 +75,17 @@ export default class Main extends React.Component {
        if (category.actionType == "equip") return "/items/" + category.inventorySlot + "#";
        return "/items/other#";
     }
+    isMerchant = (monster) => {
+        if (!monster.droplistLink?.items?.length) return false;
+        if (monster.droplistLink.items.length > 1) return true;
+        if (monster.droplistLink.items[0].itemID == "gold") return false;
+        return true;
+    }
+    
     getMonsterRootLink = (monster) => {
        const monsterClass = monster.monsterClass || 'other' ;
        if (monster.attackChance || monster.maxHP) return  "/monsters/" + monsterClass + "#";
-       if (monster.droplistID) return "/npc/merchant#";
+       if (this.isMerchant(monster)) return "/npc/merchant#";
        if (monster.name.charAt(0).toUpperCase()<='G') return "/npc/a-g#";
        if (monster.name.charAt(0).toUpperCase()<='R') return "/npc/h-r#";
        return "/npc/s-z#";
