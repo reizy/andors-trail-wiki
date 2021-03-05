@@ -105,12 +105,21 @@ div.rgt-cell-header-inner {
     margin-left:5px;
     margin-top: 15px;
 }
+
 /*Black theme*/
 body {
     background-color: black;
     color: white;
 }
-
+li {
+    list-style-type: circle;
+}
+li.end {
+    list-style-type: square;
+}
+li.exp {
+    list-style-type: disc;
+}
 div.rgt-container, div.rgt-cell-header-inner, div.rgt-cell, div.rgt-footer {
     background-color: black;
     color: white;

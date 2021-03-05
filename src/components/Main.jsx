@@ -9,6 +9,7 @@ import ItemsPage from './items/ItemsPage.jsx';
 import ConditionsPage from './conditions/ConditionsPage';
 import MonstersPage from './monsters/MonstersPage';
 import NpcPage from './npc/NpcPage';
+import QuestsPage from './quests/QuestsPage';
 import MapPage from './maps/MapPage';
 import calculateCost from './CostCalculator';
 import expCalculator from './ExpCalculator';
@@ -35,6 +36,7 @@ export default class Main extends React.Component {
       this.getJsonResource(resources.loadresource_monsters, "monsters", downcounter);
       this.getJsonResource(resources.loadresource_droplists, "droplists", downcounter);
       this.getJsonResource(resources.loadresource_conversationlists, "conversations", downcounter);
+      this.getJsonResource(resources.loadresource_quests, "quests", downcounter);
 
     }
 
@@ -109,6 +111,7 @@ export default class Main extends React.Component {
         this.temp.maps.items = this.temp.items.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.monsters = this.temp.monsters.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.conversations = this.temp.conversations.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
+        this.temp.maps.quests = this.temp.quests.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.spawngroups = {};
 
         Object.values(this.props.maps).forEach((map)=>{
@@ -123,6 +126,48 @@ export default class Main extends React.Component {
             map.objectgroups?.signs?.forEach((sign)=> {
                 sign.message = this.temp.maps.conversations[sign.name]?.message;
             })
+        })
+
+        this.temp.conversations.forEach((c) => {
+            const doLink = (req) => {
+                const type = req.requireType||req.rewardType;
+                const id = req.requireID||req.rewardID;
+                if (["questProgress", "questLatestProgress", "removeQuestProgress"].indexOf(type) >= 0) {
+                    req.link = this.temp.maps.quests[id];
+                    if (!req.link) {debug(req); return}
+                    req.link.conv_links = req.link.conv_links || [];
+                    req.link.conv_links.push(c);
+                } else if (["inventoryKeep", "inventoryRemove", "wear", "usedItem", "wearRemove", "giveItem"].indexOf(type) >= 0) {
+                    req.link = this.temp.maps.items[id];
+                    if (!req.link) {debug(req); return}
+                    req.link.conv_links = req.link.conv_links || [];
+                    req.link.conv_links.push(c);
+                } else if (type == "killedMonster") {
+                    req.link = this.temp.maps.monsters[id];
+                    req.link.conv_links = req.link.conv_links || [];
+                    req.link.conv_links.push(c);
+                } else if ([
+                    "removeSpawnArea", "spawnAll", "deactivateSpawnArea", 
+                    "skillIncrease", 
+                    "dropList", 
+                    "actorCondition", "hasActorCondition",
+                    "factionScore", "factionScoreEquals", "alignmentChange", "alignmentSet",
+                    "random",
+                    "timerElapsed", "createTimer",
+                    "changeMapFilter","deactivateMapObjectGroup","activateMapObjectGroup"
+                    ].indexOf(type) >= 0) {
+                    // do nothing
+                } else {
+                    debug(type + " "+id, true)
+                }
+            }
+            c.replies?.forEach((r) => {
+                r.next = this.temp.maps.conversations[r.nextPhraseID];
+                r.requires?.forEach(doLink);
+
+            })
+            c.rewards?.forEach(doLink);
+            
         })
 
         this.temp.items.forEach((item, index) => {
@@ -198,6 +243,8 @@ export default class Main extends React.Component {
                          console.warn(monster);
                     }
                 })
+
+                monster.conversationLink = this.temp.maps.conversations[monster.phraseID];
             }
         });
         this.temp.monsters = this.temp.monsters.filter((e)=>e);
@@ -269,7 +316,6 @@ export default class Main extends React.Component {
 
     render() {
         if (!this.state.items) return <Home />;
-        console.log(window);
         const style = { minHeight: (window.innerHeight - 46), paddingTop:1 };
         return (
             <div>
@@ -284,6 +330,7 @@ export default class Main extends React.Component {
                         <PropsRoute path='/monsters' component={MonstersPage} data = { this.state.monsters }/>
                         <PropsRoute path='/categories' component={ItemCategoriesTable} data = { this.state.itemcategories }/> 
                         <PropsRoute path='/npc' component={NpcPage} data = { this.state.monsters }/> 
+                        <PropsRoute path='/quests' component={QuestsPage} data = { this.state.quests }/> 
                         <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }
                             expanded={this.state.expandedSubMenu} toggleExpand={this.toggleExpandSubMenu}/> 
                     </Switch>

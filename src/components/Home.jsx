@@ -11,7 +11,7 @@ export default class Table extends React.Component {
 
 
     render() {
-        return ( <div style={{textAlign:'left'}}>
+        return ( <div style={{textAlign:'left', margin:10}}>
             <p>Welcome to <b>Andor's Trail Directory V2</b> the fan page about amazing, beautiful a great game <a href="https://play.google.com/store/apps/details?id=com.gpl.rpg.AndorsTrail">Andor's Trail</a>.</p>
 
             <h2>About</h2>

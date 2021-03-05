@@ -25,6 +25,7 @@ const parseXmlMap = (r, name) => {
             }
         });
     }
+    validateTilesets(map);
     mapLayers(map);
     return map;
 }
@@ -66,6 +67,15 @@ function parseLayer(e, map, name) {
         console.log(err);
     }
 }
+function validateTilesets(map) {
+    map.tilesets.forEach((t) => {
+        const id = t.firstgid;
+        var tileset = map.tilesets.find((e) => ((id >= e.firstgid) && (id < (e.firstgid + e.tilecount))));
+        if (tileset != t) {
+            tileset.firstgid = -9999; // current game use last tileset, so we disable prevoious ones
+        }
+    });
+}
 function mapLayers(map) {
     map.field = [];
     for (let y = 0; y < map.height; y++) {
@@ -85,9 +95,6 @@ function getTileById(map, layer, id) {
     if (id == 0)
         return;
     var tileset = map.tilesets.find((e) => ((id >= e.firstgid) && (id < (e.firstgid + e.tilecount))));
-    if (!tileset) {
-        console.warn("No tileset for '" + map.name + "." + layer + "' " + id);
-    }
     return {
         id,
         tileset: tileset,

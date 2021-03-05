@@ -40,6 +40,7 @@ export default function parseXmlMap(r, name) {
             }
         });
     }
+    validateTilesets(map);
     mapLayers(map);
     return map;
 }
@@ -188,6 +189,20 @@ function parseLayer(e, map, name) {
     } catch (err) {
         console.log(err);
     }
+}
+function validateTilesets(map) {
+    map.tilesets.forEach((t) => {
+        const id = t.firstgid;
+        var tileset = map.tilesets.find((e) => ((id >= e.firstgid) && (id < (e.firstgid + e.tilecount))));
+        if (tileset != t) {
+            tileset.firstgid = -9999; // current game use last tileset, so we disable prevoious ones
+            doIfDebug(() => {
+                console.warn("Intersecting tilesets indexes at '" + map.name + "'");
+                console.warn(tileset);
+                console.warn(t);
+            });
+        }
+    });
 }
 function mapLayers(map) {
     map.field = [];

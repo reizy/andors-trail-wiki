@@ -56,8 +56,9 @@ export default class MonstersPage extends React.Component {
                     marginTop: row.y + getRandomInt(row.height - 32),
                 };
                 const monster = link.monsters[index%link.monsters.length];
+                const key = monster.id+"_"+index;
                 result.push(
-                    <div key ={index} style={style} className={className} title={monster.name}>
+                    <div key ={key} style={style} className={className} title={monster.name}>
                         <Icon data={monster} zoom={zoom} noBackground="true" />
                     </div>
                 )
