@@ -14,8 +14,7 @@ export default class Table extends React.Component {
             ["", (o)=> {return <Icon data={o.monster} />;}],
             ["Name", (o)=>{return RenderHref(o.monster)}, { textAlign: 'left'} ],
             ["Quantity",(o)=>{return Range(o.quantity)}],
-            ["Chance",(o)=>{return o.monster.maxHP?(o.chance+"%"):"sell"}],
-
+            ["Chance",(o)=>{return o.type ||(o.monster.maxHP?(o.chance+"%"):"sell")}],
         ];
     }
 
@@ -40,6 +39,7 @@ export default class Table extends React.Component {
     }
 
     render() {
+
         return (
             <table style={{width: 400}} >
                 <thead style={{display: 'none'}}><tr>{this.getHeader()}</tr></thead>
@@ -59,6 +59,6 @@ const RenderHref = (o) => {
     return  <a href={href}>{o.name}</a>
 }
 const Range = (o) => {
-    if (o.max == o.min) return o.max;
+    if (o?.max == o?.min) return o?.max;
     return o.min + "-" + o.max;
 }

@@ -11,11 +11,8 @@ export default class Table extends React.Component {
     }
     getKeys = function () {
         return [
-            ["", (o)=> {return <Icon data={o.monster} />;}],
-            ["Name", (o)=>{return RenderHref(o.monster)}, { textAlign: 'left'} ],
-            ["Quantity",(o)=>{return Range(o.quantity)}],
-            ["Chance",(o)=>{return o.monster.maxHP?(o.chance+"%"):"sell"}],
-
+            ["", (o)=> {return <Icon data={o} />;}],
+            ["Name", (o)=>{return RenderHref(o)}, { textAlign: 'left'} ],
         ];
     }
 
@@ -27,10 +24,11 @@ export default class Table extends React.Component {
         })
     }
 
-    getRowsData = function (data, filter) {
+    getRowsData = function () {
+        var data = this.props.data;
         if (!data) return "";
-        if (filter && filter.length>0) {
-            data = data.filter((item)=>filter.indexOf(item.category) > -1);
+        if (this.props.filter && this.props.filter.length>0) {
+            data = data.filter((item)=>this.props.filter.indexOf(item.category) > -1);
         }
         var keys = this.getKeys();
         return data.map((row, index)=>{
@@ -39,12 +37,10 @@ export default class Table extends React.Component {
     }
 
     render() {
-        var data = this.props.data;
-        if (!data) return "";
         return (
             <table style={{width: 400}} >
                 <thead style={{display: 'none'}}><tr>{this.getHeader()}</tr></thead>
-                <tbody>{this.getRowsData(data, this.props.filter)}</tbody>
+                <tbody>{this.getRowsData()}</tbody>
             </table>
         );
     }

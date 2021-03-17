@@ -59,7 +59,7 @@ const showCondition = (prefix, rowIndex) => {
         var title = prefix;
         if (row.chance) title += row.chance +"% chance of ";
         title += row.link.name ;
-        if (row.magnitude > 1) title += " x" + row.magnitude;
+        title += (row.magnitude > 1)?(" x" + row.magnitude) : " clearing";
         if (row.duration) title += " (" + row.duration + " rounds)";
         const href = "/conditions#"+row.link.id;
         const id = getImgId(row.link.iconID, rowIndex, index);

@@ -52,8 +52,8 @@ export default class MonstersPage extends React.Component {
             for (let i = 0; i < quantity; i++) {
                 index++;
                 const style = { 
-                    marginLeft: row.x + getRandomInt(row.width - 32), 
-                    marginTop: row.y + getRandomInt(row.height - 32),
+                    left: row.x + getRandomInt(row.width - 32), 
+                    top: row.y + getRandomInt(row.height - 32),
                 };
                 const monster = link.monsters[index%link.monsters.length];
                 const key = monster.id+"_"+index;
@@ -66,6 +66,33 @@ export default class MonstersPage extends React.Component {
             return result;
         })
     }
+    renderScript = function (script, zoom) {
+
+        if (!script) return "";
+        return script.map((row) => {
+            var className = "script"
+            const hash = this.props.location?.hash;
+            if (hash == '#'+row.name) {
+                className = className + " active"; 
+            }
+            const result = [];
+
+            const style = { 
+                left: row.x, 
+                top: row.y,
+                width: row.width,
+                height: row.height,
+            };
+
+            const key = row.name;
+            result.push(
+                    <div key ={key} style={style} className={className} title={row.name}/>
+            )
+            
+            return result;
+        })
+    }
+
     renderMapchange = function (events, zoom) {
         if (!events) return "";
         return events.map((row, index) => {
@@ -103,6 +130,8 @@ export default class MonstersPage extends React.Component {
     renderObjectgroups = function (data, zoom) {
         return (
                 <div className="objectgroups">
+                    {this.renderScript(data?.scripts)}
+                    {this.renderScript(data?.containers)}
                     {this.renderSpawn(data?.spawn)}
                     {this.renderMapchange(data?.mapchange)}
                     {this.renderSign(data?.signs)}
@@ -126,7 +155,7 @@ export default class MonstersPage extends React.Component {
        var height = zoom * data.height;
 
        return (
-            <div style={{backgroundColor:'white', width:width, height:height, position:'relative' }}>
+            <div style={{backgroundColor:'white', width:width, height:height, position:'relative', margin:'auto' }}>
                 {this.getRowsData(data, zoom)}
                 {this.getRowsDataAbove(data, zoom)}
                 {renderOG && <div style={{position: 'absolute'}}>{this.renderObjectgroups(data.objectgroups, zoom)}</div>}

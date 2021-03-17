@@ -1,7 +1,9 @@
 import React from 'react';
 import debug from '../../utils/debug';
 import MapsList from '../MapsList';
-import LinksTable from './LinksTable';
+import SellItemsTable from './LinksTable';
+import QuestItemsTable from './QuestItemsTable';
+import QuestsTable from './QuestsTable';
 
 const styles = {
     text: {
@@ -34,7 +36,12 @@ export default class ExpandingName extends React.Component {
 
         const value = this.props.value;
         const links = data.droplistLink?.items;
-        if (!links) {
+        const quests = data.questLinks;
+        const questItemsLinks = [];
+        data.questItemsLinks?.forEach((e)=>questItemsLinks.push(e));
+        data.questDropListLinks?.flatMap((e)=>e.link.items)?.forEach((e)=>questItemsLinks.push(e));
+
+        if (!links && !quests?.length && !questItemsLinks?.length) {
             return (
               <React.Fragment>
                     <div style={{ display:'flex'}} >
@@ -50,7 +57,9 @@ export default class ExpandingName extends React.Component {
                             <span style={styles.text}>{value}</span>
                     </div>
                     <div style={styles.table}>
-                        {(this.state.expanded) && <LinksTable data={links}/>}
+                        {(this.state.expanded) && <SellItemsTable data={links}/>}
+                        {(this.state.expanded) && <QuestItemsTable data={questItemsLinks}/>}
+                        {(this.state.expanded) && <QuestsTable data={quests}/>}
                     </div>
 
               </React.Fragment> );

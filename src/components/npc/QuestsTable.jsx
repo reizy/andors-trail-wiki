@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Icon from '../Icon';
+import { HashLink as Link } from 'react-router-hash-link';
 
 export default class Table extends React.Component {
 
@@ -11,11 +12,8 @@ export default class Table extends React.Component {
     }
     getKeys = function () {
         return [
-            ["", (o)=> {return <Icon data={o.link} />;}, { width: 40}],
-            ["Name", (o)=>{return RenderHref(o.link)}, { textAlign: 'left', width: 250} ],
-            ["Quantity",(o)=>{return Range(o.quantity)}, { width: 40}],
-            ["Price",(o)=>{return calculateCostWithMod(o.link, 0.15)+" gold"}, { textAlign: 'right'}],
-            ["Buy",(o)=>{return calculateCostWithMod(o.link, -0.15)+" gold"}, { textAlign: 'right'}],
+            ["", (o)=> IconCell(o), { width: 40} ],
+            ["Name", (o)=>{return o.name}, { textAlign: 'left'} ],
         ];
     }
 
@@ -40,6 +38,7 @@ export default class Table extends React.Component {
     render() {
         var data = this.props.data;
         if (!data) return "";
+
         return (
             <table style={{width: 500}} >
                 <thead style={{display: 'none'}}><tr>{this.getHeader()}</tr></thead>
@@ -65,4 +64,8 @@ const Range = (o) => {
 const calculateCostWithMod = (o, mod) => {
     const cost = o.baseMarketCost;
     return cost + Math.trunc(cost * mod);
+}
+const IconCell = (data) => {
+    const href = (data.rootLink) + data.id;
+    return <Link to={href}><img title={data.id} src="/image/ui_icon_quest.png"/></Link>
 }

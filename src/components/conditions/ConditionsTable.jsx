@@ -230,6 +230,16 @@ export default class Table extends React.Component {
             },
             {
                 id: i++,
+                field: 'fullRoundEffect',
+                label: 'Full Round HP',
+                getValue: ({value, column}) => ((value?.increaseCurrentHP?.min||0)+(value?.increaseCurrentHP?.max||0))/2,
+                cellRenderer: RangeCell("fullRoundEffect","increaseCurrentHP"),
+                sort:sortInt,
+                width: '115px',
+                visible: this.isEmptyColumn((item)=>item.fullRoundEffect?.increaseCurrentHP),
+            },
+            {
+                id: i++,
                 field: 'roundEffect',
                 label: 'roundEffect',
                 getValue: ({value, column}) => JSON.stringify(value),

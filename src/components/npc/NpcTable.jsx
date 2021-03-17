@@ -85,6 +85,13 @@ export default class Table extends React.Component {
                 cellRenderer: LocationCell,
                 width: '300px',
             },
+            {
+                id: i++,
+                field: 'questLinks',
+                label: 'questLinks',
+                getValue: ({value, column}) => value?.length,
+                width: '300px',
+            },
          
         ]
     }

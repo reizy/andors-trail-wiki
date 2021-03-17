@@ -23,7 +23,7 @@ export default class Icon extends React.Component {
         const {data, prefix, noBackground}= this.props;
         const zoom = this.props.zoom || 32;
 
-        const href = (data.rootLink || prefix) + data.id;
+        const href = (data.rootLink || prefix) + (data.id||data.name);
         const key = "i" + (new Date() -0) +"_"+ Math.random();
         const tmp = data.iconID?.split(":");
         const file = tmp[0];

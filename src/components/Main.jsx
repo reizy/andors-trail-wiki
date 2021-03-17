@@ -102,7 +102,73 @@ export default class Main extends React.Component {
         }
     }
 
+    linkConversationInner(c, conversations){
+        if (!c) return
+        if (conversations[c.id]) return
+        conversations[c.id] = c;
+
+        c.replies?.forEach((r) => {
+            this.linkConversationInner(r.next, conversations);
+        })
+    }
+    
+    linkConversation = (monster) => {
+         const root = monster.conversationLink;
+         if (!root) return;
+         var conversations = {};
+         this.linkConversationInner(root, conversations);
+
+         conversations = Object.values(conversations);
+         monster.rewards = conversations.filter((e) => e.rewards?.length);
+         monster.requires = conversations.flatMap((e) => e.replies).filter((e) => e?.requires?.length);
+
+         monster.questLinks = monster.rewards
+            .flatMap((e) => e.rewards)
+            .map((e) => e.link)
+            .filter((e) => e)
+            .filter(unique)
+            .filter((e) => !!e.showInLog)
+         monster.questItemsLinks = monster.rewards
+            .flatMap((e) => e.rewards)
+            .filter((e) => ["inventoryKeep", "inventoryRemove", "wear", "usedItem", "wearRemove", "giveItem", ].indexOf(e.rewardType) >= 0)
+         monster.questDropListLinks = monster.rewards
+            .flatMap((e) => e.rewards)
+            .filter((e) => ["dropList", ].indexOf(e.rewardType) >= 0)
+
+
+
+         monster.questLinks?.forEach((e) => {
+             e.links = e.links || [];
+             e.links.push(monster);
+         });
+         monster.questItemsLinks?.forEach((e) => {
+             //console.log(e);
+             const link = e.link;
+             link.droplists = link.droplists || [];
+             const droplist = {
+                 droplist:{
+                     links: [ monster ]
+                 },
+                 type:"quest"
+             }
+             link.droplists.push(droplist);
+         });
+         monster.questDropListLinks?.forEach((e) => {
+             //console.log(e);
+             const droplist = e.link;
+             droplist.links = droplist.links || [];
+             droplist.links.push(monster);
+             droplist.type = "quest";
+         });
+
+         /**/
+    }
+
     linkTemp(){
+        this.temp.scripts = [];
+        this.temp.containers = [];
+
+
         this.temp.maps = {};
 
         this.temp.maps.conditions = this.temp.actorconditions.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
@@ -113,6 +179,8 @@ export default class Main extends React.Component {
         this.temp.maps.conversations = this.temp.conversations.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.quests = this.temp.quests.reduce((obj, item) => Object.assign(obj, { [item.id]: item }), {});
         this.temp.maps.spawngroups = {};
+        this.temp.maps.containers = {};
+        this.temp.maps.scripts = {};
 
         Object.values(this.props.maps).forEach((map)=>{
             map.rootLink = "/map/";
@@ -125,6 +193,14 @@ export default class Main extends React.Component {
             })
             map.objectgroups?.signs?.forEach((sign)=> {
                 sign.message = this.temp.maps.conversations[sign.name]?.message;
+            })
+            map.objectgroups?.scripts?.forEach((script)=> {
+                script.rootLink = "/map/" + map.name + "#";
+                this.temp.scripts.push(script);
+            })
+            map.objectgroups?.containers?.forEach((container)=> {
+                container.rootLink = "/map/" + map.name + "#";
+                this.temp.containers.push(container);
             })
         })
 
@@ -140,6 +216,10 @@ export default class Main extends React.Component {
                 } else if (["inventoryKeep", "inventoryRemove", "wear", "usedItem", "wearRemove", "giveItem"].indexOf(type) >= 0) {
                     req.link = this.temp.maps.items[id];
                     if (!req.link) {debug(req); return}
+                    req.link.conv_links = req.link.conv_links || [];
+                    req.link.conv_links.push(c);
+                } else if (type == "dropList") {
+                    req.link = this.temp.maps.droplists[id];
                     req.link.conv_links = req.link.conv_links || [];
                     req.link.conv_links.push(c);
                 } else if (type == "killedMonster") {
@@ -170,6 +250,23 @@ export default class Main extends React.Component {
             
         })
 
+        this.temp.scripts.forEach((script) => {
+
+            script.iconID = "items_books:8";
+            script.id = script.name;
+            script.conversationLink = this.temp.maps.conversations[script.name];
+            this.linkConversation(script);
+        });
+        this.temp.containers.forEach((container) => {
+            container.iconID = "items_g03_package_omi1:0";
+            container.id = container.name;
+            container.droplistLink = this.temp.maps.droplists[container.name];
+            if (container.droplistLink) {
+                container.droplistLink.links = container.droplistLink.links||[];
+                container.droplistLink.links.push(container);
+                container.droplistLink.type = "container";
+            }
+        });
         this.temp.items.forEach((item, index) => {
             if (this.temp.maps.items[item.id] != item) {
                 console.warn("More than one item with id '" + item.id + "'");
@@ -193,6 +290,8 @@ export default class Main extends React.Component {
                 this.linkConditions(item.hitReceivedEffect, item, "hitReceivedEffect");
                 this.linkConditions(item.killEffect, item, "killEffect");
                 this.linkConditions(item.useEffect, item, "useEffect");
+
+                item.conv_links = item.conv_links?.filter(unique)
             }
         });
         this.temp.items = this.temp.items.filter((e)=>e);
@@ -245,22 +344,27 @@ export default class Main extends React.Component {
                 })
 
                 monster.conversationLink = this.temp.maps.conversations[monster.phraseID];
+                this.linkConversation(monster);
             }
         });
         this.temp.monsters = this.temp.monsters.filter((e)=>e);
 
         this.temp.droplists.forEach((droplist) => {
                 droplist.items.forEach((item) => {
-                    item.droplist=droplist;
+                    item.droplist = droplist;
                     item.link = this.temp.maps.items[item.itemID];
                     item.link.droplists=item.link.droplists||[];
                     item.link.droplists.push(item);
+                    item.type = droplist.type;
                 })
             }
         );
         this.temp.actorconditions.forEach((condition)=>{
             condition.iconBg = 1;
             condition.rootLink="/conditions#";
+        })
+        this.temp.quests.forEach((condition)=>{
+            condition.rootLink="/quests#";
         })
         this.props.globalMap.segments.forEach((segment)=>{
             segment.rootLink = "/map/g/";
@@ -344,4 +448,8 @@ export default class Main extends React.Component {
             </div> 
         );
     }
+}
+
+function unique(item, pos, self) {
+    return self.indexOf(item) == pos;
 }

@@ -82,6 +82,12 @@ div.rgt-cell-header-inner {
 .sign {
     position: absolute;
 }
+.script {
+    position: absolute;
+}
+.script.active {
+    border: solid cyan 2px;
+}
 .TableAncor {
     margin-top: -60px;
     position: absolute;

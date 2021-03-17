@@ -16,7 +16,7 @@ export default class Table extends React.Component {
             ["Type",(o)=>o.type],
             ["Aim",(o)=>o.aim],
             ["Chance",(o)=>{return o.chance?(o.chance + "%"):""}],
-            ["Magnitude",(o)=>{return o.magnitude + "x"}],
+            ["Magnitude",(o)=>{return o.magnitude?(o.magnitude + "x"):"clears"}],
             ["Duration",(o)=>{return o.duration?(o.duration + " rounds"):""}],
         ];
     }

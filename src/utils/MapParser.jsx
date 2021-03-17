@@ -68,10 +68,10 @@ function parseObjectgroups(r, map) {
                   map.objectgroups.signs.push(mapSign(e, map, objectgroup));
                   break;
                 case "script":
-                  map.objectgroups.scripts.push(e);
+                  map.objectgroups.scripts.push(mapScript(e, map, objectgroup));
                   break;
                 case "container":
-                  map.objectgroups.containers.push(e);
+                  map.objectgroups.containers.push(mapContainers(e, map, objectgroup));
                   break;
                 case "mapchange":
                   map.objectgroups.mapchange.push(mapMapchange(e, map, objectgroup));
@@ -107,6 +107,40 @@ function mapSpawn(e, map, objectgroup) {
     return spawn;
 }
 
+function mapScript(e, map, objectgroup) {
+    oneChildCheck(e);
+
+    var script = {
+        ...e.attributes,
+        objectgroup,
+        width: e.attributes.width - 0,
+        height: e.attributes.height - 0,
+        x: e.attributes.x - 0,
+        y: e.attributes.y - 0,
+    }
+    e.children[0]?.children?.forEach((c) => {
+        propertyCheck(c, script, ["when"]);
+        script[c.attributes.name] = c.attributes.value;
+    });
+    return script;
+}
+function mapContainers(e, map, objectgroup) {
+    noChildCheck(e);
+
+    var container = {
+        ...e.attributes,
+        objectgroup,
+        width: e.attributes.width - 0,
+        height: e.attributes.height - 0,
+        x: e.attributes.x - 0,
+        y: e.attributes.y - 0,
+    }
+    e.children[0]?.children?.forEach((c) => {
+        propertyCheck(c, container, ["when"]);
+        container[c.attributes.name] = c.attributes.value;
+    });
+    return container;
+}
 function mapMapchange(e, map, objectgroup) {
     oneChildCheck(e);
 

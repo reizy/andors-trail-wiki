@@ -3,6 +3,7 @@ import GridTable from '@nadavshaar/react-grid-table';
 import '../../@nadavshaar/react-grid-table/dist/index.css';
 import NameCell from "./NameCell";
 import TableAbsHeader from "../TableAbsHeader";
+import { HashLink as Link } from 'react-router-hash-link';
 
 const sortStr = ({a, b, isAscending}) => {
     let aa = a||"";
@@ -121,7 +122,11 @@ export default class Table extends React.Component {
 }
 
 const IconCell = ({tableManager, value, onChange, isEdit, data, column, rowIndex, searchText, isFirstEditableCell}) => {
-    return <img title={value} id={value} style={{paddingLeft: 1, paddingTop: 5}} src="/image/ui_icon_quest.png"/>
+    const href = (data.rootLink) + data.id;
+    return <Link to={href}>
+               <div id={value} className="TableAncor"/>
+               <img style={{paddingLeft: 1, paddingTop: 5}} src="/image/ui_icon_quest.png"/>
+           </Link>
 }
 const TextCell = ({tableManager, value, onChange, isEdit, data, column, rowIndex, searchText, isFirstEditableCell}) => {
     const text = {

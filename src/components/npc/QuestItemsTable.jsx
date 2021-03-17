@@ -13,9 +13,9 @@ export default class Table extends React.Component {
         return [
             ["", (o)=> {return <Icon data={o.link} />;}, { width: 40}],
             ["Name", (o)=>{return RenderHref(o.link)}, { textAlign: 'left', width: 250} ],
-            ["Quantity",(o)=>{return Range(o.quantity)}, { width: 40}],
-            ["Price",(o)=>{return calculateCostWithMod(o.link, 0.15)+" gold"}, { textAlign: 'right'}],
-            ["Buy",(o)=>{return calculateCostWithMod(o.link, -0.15)+" gold"}, { textAlign: 'right'}],
+            ["Quantity",(o)=>{return Range(o.quantity)}],
+            ["By quest", (o)=> "give by quest" ],
+            
         ];
     }
 
@@ -40,6 +40,7 @@ export default class Table extends React.Component {
     render() {
         var data = this.props.data;
         if (!data) return "";
+
         return (
             <table style={{width: 500}} >
                 <thead style={{display: 'none'}}><tr>{this.getHeader()}</tr></thead>
@@ -59,10 +60,6 @@ const RenderHref = (o) => {
     return  <a href={href}>{o.name}</a>
 }
 const Range = (o) => {
-    if (o.max == o.min) return o.max;
+    if (o?.max == o?.min) return o?.max;
     return o.min + "-" + o.max;
-}
-const calculateCostWithMod = (o, mod) => {
-    const cost = o.baseMarketCost;
-    return cost + Math.trunc(cost * mod);
 }

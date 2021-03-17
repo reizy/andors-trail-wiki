@@ -28,9 +28,13 @@ export default class ExpandingName extends React.Component {
     }
 
     render() {
+
         const data = this.props.data;
+
         const value = this.props.value;
-        const links = data.droplists?.flatMap((e)=>getEnemyList(e))?.filter((e)=>!!e);
+        const links = [];
+        data.droplists?.flatMap((e)=>getEnemyList(e))?.filter((e)=>!!e).forEach((e)=>links.push(e));
+
         if (!links||!links.length) {
             return (
               <React.Fragment>
@@ -40,6 +44,7 @@ export default class ExpandingName extends React.Component {
                     </div>
               </React.Fragment> );
         }
+
         return (
               <React.Fragment>
                     <div style={{ display:'flex'}} onClick={this.toggleExpand}>
