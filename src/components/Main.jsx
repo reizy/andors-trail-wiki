@@ -443,7 +443,7 @@ export default class Main extends React.Component {
                     <div style={{float:'left'}}>
                         2021, Powered by <a href="https://github.com/reizy/andors-trail-wiki">Reizy</a>
                     </div>
-                    <div style={{float:'right'}}>Game version 0.7.13</div>
+                    <div style={{float:'right'}}>Game version 0.7.14</div>
                 </div>
             </div> 
         );
