@@ -14,22 +14,12 @@ export default class MonstersPage extends React.Component {
     constructor(props) {
         super(props);
     }
-    getRowsData = function (data, zoom) {
-        var field = data.field;
-        if (!field) return "";
 
-        const aboveIndex = data.layerList.map((e) => e.name).indexOf("above");
-        var layers = data.layerList.filter((e,i) => (i < aboveIndex));
-        return field.map((row, index)=>{
-            return <RenderRow key={index} data={row} layers={layers} y={index} zoom={zoom}/>
-        })
-    }
-    getRowsDataAbove = function (data, zoom) {
+    drawLayerByName = function (data, zoom, name) {
         var field = data.field;
         if (!field) return "";
- 
-        const aboveIndex = data.layerList.map((e) => e.name).indexOf("above");
-        var layers = data.layerList.filter((e,i) => (i >= aboveIndex));
+        var layers = data.layerList.filter((e,i) => e.name == name);
+
         return field.map((row, index)=>{
             return <RenderRow key={index} data={row} layers={layers} y={index} zoom={zoom}/>
         })
@@ -156,9 +146,16 @@ export default class MonstersPage extends React.Component {
 
        return (
             <div style={{backgroundColor:'white', width:width, height:height, position:'relative', margin:'auto' }}>
-                {this.getRowsData(data, zoom)}
-                {this.getRowsDataAbove(data, zoom)}
+                {this.drawLayerByName(data, zoom, "base")}
+                {this.drawLayerByName(data, zoom, "ground")}
+                {this.drawLayerByName(data, zoom, "objects")}
+                {this.drawLayerByName(data, zoom, "objects_1")}
+
+                {this.drawLayerByName(data, zoom, "above")}
+                {this.drawLayerByName(data, zoom, "top")}
+
                 {renderOG && <div style={{position: 'absolute'}}>{this.renderObjectgroups(data.objectgroups, zoom)}</div>}
+
             </div>
        );
     }
@@ -170,8 +167,6 @@ const RenderRow = (props) => {
 const RenderCell = (props) => {
     const {data, layers, x, y, zoom} = props;
     return layers
-            .filter((l)=>l.visible)
-            .filter((l)=>!l.name.startsWith("walkable"))
             .map((l) => data[l.name])
             .filter((ld)=>ld)
             .map((ld, index) => {

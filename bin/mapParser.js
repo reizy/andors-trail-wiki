@@ -47,9 +47,6 @@ function parseTileset(e, map, name) {
 
 function parseLayer(e, map, name) {
 
-    if (e.attributes.visible == "0") return;
-    if ( e.attributes.name.toLowerCase() == "walkable") return;
-
     map.layerList.push({
         name: e.attributes.name.toLowerCase(),
         visible: (e.attributes.visible != "0"),

@@ -7,8 +7,12 @@ const {parseXmlMap}  = require('./mapParser.js');
 const ZOOM = 32;
 const ZOOM_OUT = 12;
 
+var counter = 0;
+var counterSize = 0;
+
 function saveCanvas(canvas, fileName) {
-    console.log(fileName);
+    counter++;
+    console.log(`[${counter}/${counterSize}] ${fileName}`);
     const buffer = canvas.toBuffer('image/jpeg', { quality: 0.8 })
     fs.writeFileSync('./public/backgrounds/' + fileName +'.jpg', buffer)
 }
@@ -37,9 +41,13 @@ function drawCanvas(fileName, map) {
     const canvas = createCanvas(width, height)
     const context = canvas.getContext('2d')
 
-    const layerList = map.layerList
-        .filter((e)=>e.visible)
-        .filter((l)=>!l.name.startsWith("walkable"));
+    var layerList = [];
+    layerList = layerList.concat(map.layerList.filter((e)=>e.name=="base"))
+    layerList = layerList.concat(map.layerList.filter((e)=>e.name=="ground"))
+    layerList = layerList.concat(map.layerList.filter((e)=>e.name=="objects"))
+    layerList = layerList.concat(map.layerList.filter((e)=>e.name=="objects_1"))
+    layerList = layerList.concat(map.layerList.filter((e)=>e.name=="above"))
+    layerList = layerList.concat(map.layerList.filter((e)=>e.name=="top"))
 
     var downcounter = {progress:map.width * map.height * layerList.length};
     const thenDo = () => {
@@ -83,7 +91,8 @@ const getXmlMap=(name) => {
 const generateAll = (tmxFolder) => {
 
     fs.readdir(tmxFolder, (err, files) => {
-        files.forEach(file => {
+        counterSize = files.length;
+        files.forEach((file, i) => {
             fileName = file.split('.');
             if (fileName[1] == 'tmx') {
                 getXmlMap(fileName[0]);
@@ -96,9 +105,9 @@ const tmxFolder = './public/xml/';
 
 var args = process.argv.filter((e,i) => (i >= 2));
 
-console.log(args)
 if (args.length) {
-    args.forEach((e)=>getXmlMap(e));
+    counterSize = args.length;
+    args.forEach((e, i) => getXmlMap(e));
 } else {
     generateAll(tmxFolder)
 }
