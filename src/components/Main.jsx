@@ -419,7 +419,7 @@ export default class Main extends React.Component {
     }
 
     render() {
-        if (!this.state.items) return <Home />;
+        // if (!this.state.items) return <Home />;
         const style = { minHeight: (window.innerHeight - 46), paddingTop:1 };
         return (
             <div>
