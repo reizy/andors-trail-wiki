@@ -4,24 +4,27 @@ import MapsList from '../MapsList';
 import SellItemsTable from './LinksTable';
 import QuestItemsTable from './QuestItemsTable';
 import QuestsTable from './QuestsTable';
+import '../css/ExpandingName.css';
 
-const styles = {
-    text: {
-        marginLeft: 10,
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
-    },
-    table: {
-        paddingTop: 10,
-        marginLeft: -10,
-    },
-}
+const fixedBaseHeight = 19.8;
+const fixedUnitHeight = 29.8;
+
+const unique = (item, pos, self) => self.indexOf(item) == pos;
 
 export default class ExpandingName extends React.Component {
 
     constructor(props) {
         super(props);
+        
+        // use groupLinks to extract how many lines in location cells
+        // bind to variable fixedheight
+        let maps = this.props.data.spawnGroupLinks;
+        if (maps.length > 0) {
+            maps = maps[0].maps.filter(unique);
+        }
+        this.fixedHeight = fixedBaseHeight + (maps.length - 1) * fixedUnitHeight;
+
+
         this.state = {
             expanded: window.location.href.endsWith(this.props.data.id.toLowerCase()),
         }
@@ -43,25 +46,30 @@ export default class ExpandingName extends React.Component {
 
         if (!links && !quests?.length && !questItemsLinks?.length) {
             return (
-              <React.Fragment>
-                    <div style={{ display:'flex'}} >
+                <React.Fragment>
+                    <div style={{ display:'flex'}}>
                         <div style={{ width: 19}} />
-                        <span style={styles.text}>{value}</span>
+                        <span class='expandedText'>{value}</span>
                     </div>
-              </React.Fragment> );
+                </React.Fragment>
+            );
         }
         return (
-              <React.Fragment>
-                    <div style={{ display:'flex'}} onClick={this.toggleExpand}>
-                            <img src="../image/sort_desc.png" />
-                            <span style={styles.text}>{value}</span>
-                    </div>
-                    <div style={styles.table}>
-                        {(this.state.expanded) && <SellItemsTable data={links}/>}
-                        {(this.state.expanded) && <QuestItemsTable data={questItemsLinks}/>}
-                        {(this.state.expanded) && <QuestsTable data={quests}/>}
-                    </div>
+            <React.Fragment>
+                <div class="expandedLink"
+                    style={{height: this.fixedHeight}}
+                    onClick={this.toggleExpand}
+                >
+                    <img src="../image/sort_desc.png" />
+                    <span class='expandedText'>{value}</span>
+                </div>
+                <div class="expandedTable">
+                    {(this.state.expanded) && <SellItemsTable data={links}/>}
+                    {(this.state.expanded) && <QuestItemsTable data={questItemsLinks}/>}
+                    {(this.state.expanded) && <QuestsTable data={quests}/>}
+                </div>
 
-              </React.Fragment> );
+            </React.Fragment>
+        );
     }
 }
