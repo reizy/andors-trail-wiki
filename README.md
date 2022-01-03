@@ -12,6 +12,17 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 6. Run 'npm build' to generate production build.
 7. To make route from any page to index.html I use "build.bat"
 
+## To run localy (for UNIX-system)
+
+If your system is UNIX, you can ues makefile instead of ".bat". Tested on my MacBookPro.
+
+1. `make link`: Make symbolic link to game resources (values, xml, drawable, raw) at "public" directry.
+2. You need have NPM installed. You can get it at https://nodejs.org/en/download/.
+3. `npm install`: Install required node.js package from package.json
+4. `make gen`: Render TMS to JPG for global map pages. Yes, it really takes a long time. (You can run `make gen_grave` to render only one map 'graveyard1' for test). Execute 1602.92s in my MBP.
+5. `make run`: Starting local development server.
+6. `npm run build`: Generate production build.
+<!-- 7. To make route from any pages to index.html I use "build.bat" -->
 
 ## Learn More
 

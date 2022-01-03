@@ -14,81 +14,80 @@ function App() {
   }
 
   const getXmlData=(fileName, thenDo)=>{
-     const headers = {
-        'Content-Type': 'text/xml',
-        'Accept': 'text/xml'
-     };
+    const headers = {
+      'Content-Type': 'text/xml',
+      'Accept': 'text/xml'
+    };
     fetch(''+fileName, {headers})
       .then(response => {
         return response.text();
       })
       .then(str => {
-          return str.replace(/<!--.*-->/g,'');
+        return str.replace(/<!--.*-->/g,'');
       })
       .then(thenDo);
-      ;
   }
   const saveTempResources = (str) => {
-      var parser = new XMLParser();
-      var myXml = parser.parseFromString(str);
+    var parser = new XMLParser();
+    var myXml = parser.parseFromString(str);
 
-      var xmlData=myXml.getElementsByTagName("array");
-      const resources = xmlData.reduce(function(map, obj) {
-                map[obj.attributes.name] = obj.children.map(o=>o.value).filter(e=>e);
-                return map;
-        }, {});
-      temp = {
-          ...temp,
-          resources
-      };
-      getMaps(temp, setData);
+    var xmlData=myXml.getElementsByTagName("array");
+    const resources = xmlData.reduce(function(map, obj) {
+      map[obj.attributes.name] = obj.children.map(o=>o.value).filter(e=>e);
+      return map;
+    }, {});
+    temp = {
+        ...temp,
+        resources
+    };
+    getMaps(temp, setData);
   }
 
   const getXmlMap=(resource, name, downcounter)=>{
-      const thenDo = (xmlString) => {
-          var parser = new XMLParser();
-          var myXml = parser.parseFromString(xmlString);
-          
-          temp.maps[name] = parseXmlMap(myXml, name);
-          downcounter.progress--
-          if (downcounter.progress==0){
-            downcounter.tryDo();
-          }
+    const thenDo = (xmlString) => {
+      var parser = new XMLParser();
+      var myXml = parser.parseFromString(xmlString);
+      
+      temp.maps[name] = parseXmlMap(myXml, name);
+      downcounter.progress--
+      if (downcounter.progress==0){
+        downcounter.tryDo();
       }
-      getXmlData(resource, thenDo)
+    }
+    getXmlData(resource, thenDo)
   }
 
   const getGlobalMap =(downcounter) => {
-      const thenDo = (xmlString) => {
-          var parser = new XMLParser();
-          var myXml = parser.parseFromString(xmlString);
-          
-          temp.globalMap = parseGlobalMap(myXml);
-          downcounter.progress--
-          if (downcounter.progress==0){
-            downcounter.tryDo();
-          }
+    const thenDo = (xmlString) => {
+      var parser = new XMLParser();
+      var myXml = parser.parseFromString(xmlString);
+      
+      temp.globalMap = parseGlobalMap(myXml);
+      downcounter.progress--
+      if (downcounter.progress==0){
+        downcounter.tryDo();
       }
-      getXmlData("/xml/worldmap.xml", thenDo);
+    }
+    getXmlData("/xml/worldmap.xml", thenDo);
   }
 
   const getMaps=(temp, thenDo)=>{
-      var maps = temp.resources.loadresource_maps;
-      var downcounter = {progress:maps.length+1, tryDo:()=>thenDo(temp)};
-      getGlobalMap(downcounter);
-      maps.forEach((path)=>{
-          getXmlMap(path.replace('@','/')+".tmx", path.replace('@xml/',''), downcounter);
-      });
+    var maps = temp.resources.loadresource_maps;
+    var downcounter = {progress:maps.length+1, tryDo:()=>thenDo(temp)};
+    getGlobalMap(downcounter);
+    maps.forEach((path)=>{
+      getXmlMap(path.replace('@','/')+".tmx", path.replace('@xml/',''), downcounter);
+    });
   }
+  
   useEffect(()=>{
-      getXmlData('/values/loadresources.xml', saveTempResources);
+    getXmlData('/values/loadresources.xml', saveTempResources);
   },[])
 
   return (
     <div className="App">
         { data.resources && <Main resources = { data.resources } maps = { data.maps } globalMap = { data.globalMap }/> }
     </div>
-
   );
 }
 
