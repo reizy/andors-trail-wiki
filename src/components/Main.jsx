@@ -441,7 +441,7 @@ export default class Main extends React.Component {
                 </div>
                 <div className="signature">
                     <div style={{float:'left'}}>
-                        2021, Powered by <a href="https://github.com/reizy/andors-trail-wiki">Reizy</a>
+                        2022, Powered by <a href="https://github.com/reizy/andors-trail-wiki">Reizy</a>
                     </div>
                     <div style={{float:'right'}}>Game version 0.7.15</div>
                 </div>

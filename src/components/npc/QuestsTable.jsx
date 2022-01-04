@@ -55,7 +55,7 @@ const RenderRow = (props) => {
 }
 const RenderHref = (o) => {
     const href = o.rootLink + o.id;
-    return  <a href={href}>{o.name}</a>
+    return <Link to={href}>{o.name}</Link>
 }
 const Range = (o) => {
     if (o.max == o.min) return o.max;
