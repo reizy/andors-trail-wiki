@@ -21,23 +21,25 @@ function Loading (props) {
     let p = props.progress;
     let percentage = (mp - p) / mp * 100;
     return (
-        <div>
-            { props.progress === undefined ? (
-                <h3>Loading TMS...</h3>
-            ) : (
-                <div>
-                    <div className="progress">
-                        <div
-                            className="progress-value"
-                            style={{width: `${percentage}%`}}
-                        />
+        <div className='loading-base'>
+            <div className='loading-container'>
+                { props.progress === undefined ? (
+                    <h3>Loading TMS...</h3>
+                ) : (
+                    <div>
+                        <div className="progress">
+                            <div
+                                className="progress-value"
+                                style={{width: `${percentage}%`}}
+                            />
+                        </div>
+                        <h3>
+                            Loading JSON...
+                            {mp - p} / {mp}
+                        </h3>
                     </div>
-                    <h3>
-                        Loading JSON...
-                        {mp - p} / {mp}
-                    </h3>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }
@@ -474,14 +476,17 @@ export default class Main extends React.Component {
         return (
             <div>
                 <div className="content" style={style}>
-                    <Switch>
-                        <Menu />
-                    </Switch>
                     {/* Loading part */}
-                    { !this.state.items && <Loading
-                        progress={this.state.progress}
-                        maxProgress={this.state.maxProgress}
-                    />}
+                    {
+                        !this.state.items ?
+                        <Loading
+                            progress={this.state.progress}
+                            maxProgress={this.state.maxProgress}
+                        /> : (
+                        <Switch>
+                            <Menu />
+                        </Switch>
+                    )}
                     <Switch>
                         <Route exact path='/' component={Home}/>
                         <PropsRoute path='/items' component={ItemsPage} data = { this.state.items }/>

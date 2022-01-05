@@ -2,6 +2,16 @@
     padding: 0px 40px;
 }
 
+.loading-base {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 900px;
+}
+.loading-container {
+    width: 50%;
+}
+
 .progress {
     background: rgba(255,255,255,0.1);
     justify-content: flex-start;
@@ -20,4 +30,5 @@
     background: #fff;
     height: 30px;
     width: 0;
+    transition: .1s;
 }
