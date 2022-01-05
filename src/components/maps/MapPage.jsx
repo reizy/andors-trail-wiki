@@ -21,7 +21,7 @@ export default class Page extends React.Component {
     render() {
         const { data, globalMap, location } = this.props;
         var map = location.pathname.substring("/map/".length);
-        if (!data) return "Loading...";
+        if (!data) return "";
 
         return (
             <div>
