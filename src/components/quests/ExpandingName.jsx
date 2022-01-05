@@ -20,7 +20,7 @@ export default class ExpandingName extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            expanded: false,
+            expanded: window.location.href.endsWith(this.props.data.id.toLowerCase()),
         }
         this.toggleExpand = this.toggleExpand.bind(this);
     }

@@ -10,7 +10,7 @@ const getRowsData = function (data) {
         const maps = data?.flatMap((e) => e.maps)?.filter(unique);
         return maps?.map((row, index) => {
             const href = row.rootLink + row.name + "#" + data[0].key;
-            return <Link key={index} to={href} className="nps-location-cell">{row.name}</Link>;
+            return <Link key={index} to={href} className="npc-location-cell">{row.name}</Link>;
         })
     }
 
