@@ -12,6 +12,7 @@
     width: 50%;
 }
 
+/* Progress bar is from https://codepen.io/traf/pen/oKbaqQ, Author: Traf */
 .progress {
     background: rgba(255,255,255,0.1);
     justify-content: flex-start;
