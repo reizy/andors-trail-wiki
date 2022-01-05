@@ -49,21 +49,21 @@ export default class ExpandingName extends React.Component {
                 <React.Fragment>
                     <div style={{ display:'flex'}}>
                         <div style={{ width: 19}} />
-                        <span class='expandedText'>{value}</span>
+                        <span className='expandedText'>{value}</span>
                     </div>
                 </React.Fragment>
             );
         }
         return (
             <React.Fragment>
-                <div class="expandedLink"
+                <div className="expandedLink"
                     style={{height: this.fixedHeight}}
                     onClick={this.toggleExpand}
                 >
                     <img src="../image/sort_desc.png" />
-                    <span class='expandedText'>{value}</span>
+                    <span className='expandedText'>{value}</span>
                 </div>
-                <div class="expandedTable">
+                <div className="expandedTable">
                     {(this.state.expanded) && <SellItemsTable data={links}/>}
                     {(this.state.expanded) && <QuestItemsTable data={questItemsLinks}/>}
                     {(this.state.expanded) && <QuestsTable data={quests}/>}
