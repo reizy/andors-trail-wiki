@@ -13,7 +13,7 @@ import QuestsPage from './quests/QuestsPage';
 import MapPage from './maps/MapPage';
 import calculateCost from './CostCalculator';
 import expCalculator from './ExpCalculator';
-import './Main.css'
+import './Main.css';
 
 // const Loading = () => ;
 function Loading (props) {
@@ -473,7 +473,7 @@ export default class Main extends React.Component {
         };
         return (
             <div>
-                <div style={style}>
+                <div className="content" style={style}>
                     <Switch>
                         <Menu />
                     </Switch>
