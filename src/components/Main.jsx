@@ -13,12 +13,41 @@ import QuestsPage from './quests/QuestsPage';
 import MapPage from './maps/MapPage';
 import calculateCost from './CostCalculator';
 import expCalculator from './ExpCalculator';
+import './Main.css'
+
+// const Loading = () => ;
+function Loading (props) {
+    let mp = props.maxProgress;
+    let p = props.progress;
+    let percentage = (mp - p) / mp * 100;
+    return (
+        <div>
+            { props.progress === undefined ? (
+                <h3>Loading TMS...</h3>
+            ) : (
+                <div>
+                    <div className="progress">
+                        <div
+                            className="progress-value"
+                            style={{width: `${percentage}%`}}
+                        />
+                    </div>
+                    <h3>
+                        Loading JSON...
+                        {mp - p} / {mp}
+                    </h3>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             expandedSubMenu: false,
+            loadJson: true,
         };
         this.temp={};
         this.toggleExpandSubMenu = this.toggleExpandSubMenu.bind(this);
@@ -28,24 +57,41 @@ export default class Main extends React.Component {
         this.setState({ expandedSubMenu: !this.state.expandedSubMenu, });
     }
 
-    getJsonResources=(resources)=>{
-      var downcounter = {progress:0};
-      this.getJsonResource(resources.loadresource_itemcategories, "itemcategories", downcounter);
-      this.getJsonResource(resources.loadresource_items, "items", downcounter);
-      this.getJsonResource(resources.loadresource_actorconditions, "actorconditions", downcounter);
-      this.getJsonResource(resources.loadresource_monsters, "monsters", downcounter);
-      this.getJsonResource(resources.loadresource_droplists, "droplists", downcounter);
-      this.getJsonResource(resources.loadresource_conversationlists, "conversations", downcounter);
-      this.getJsonResource(resources.loadresource_quests, "quests", downcounter);
+    getJsonResources = async (resources) => {
+        var downcounter = {progress: 0};
+        
+        const jsonResourcList = [
+            [resources.loadresource_itemcategories, "itemcategories"],
+            [resources.loadresource_items, "items"],
+            [resources.loadresource_actorconditions, "actorconditions"],
+            [resources.loadresource_monsters, "monsters"],
+            [resources.loadresource_droplists, "droplists"],
+            [resources.loadresource_conversationlists, "conversations"],
+            [resources.loadresource_quests, "quests"],
+        ];
 
+        // init maxProgress
+        const p = jsonResourcList.map(r => r[0].length).reduce((a, b) => a + b, 0);
+        this.setState({
+            progress: p,
+            maxProgress: p,
+        });
+
+        // parallelly send out jsonResourcList requests
+        await Promise.all(jsonResourcList.map(([loadResource, resourceName]) =>
+            this.getJsonResource(loadResource, resourceName, downcounter)
+        ));
+        console.log('well done');
     }
 
-    getJsonResource=(resource, name, downcounter)=>{
-      const that = this;
-      downcounter.progress+=resource.length;
-      resource.forEach((path)=>{
-          that.getJsonData(path.replace('@','/'), name, that, downcounter);
-      });
+    getJsonResource = async (resource, name, downcounter) => {
+        const that = this;
+        downcounter.progress += resource.length;
+        await Promise.all(resource.map(
+            path => that.getJsonData(path.replace('@','/'), name, that, downcounter)
+        ));
+
+        this.setState({progress: this.state.progress - resource.length});
     }
     countConditions = (effect, item, type) => {
         var count =  effect?.addedConditions?.length||0;
@@ -391,42 +437,51 @@ export default class Main extends React.Component {
         debug(this.temp);
     }
     
-    getJsonData=(fileName, name, that, downcounter)=>{
-        fetch(fileName+".json"
-        ,{
-            headers : { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+    getJsonData = (fileName, name, that, downcounter) =>
+        fetch(fileName+".json", {
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
         })
-        .then(function(response){
-            return response.json();
-        })
+        .then(response => response.json())
         .then(json => {
-          that.temp[name] = that.temp[name]||[];
+          that.temp[name] = that.temp[name] || [];
           that.temp[name] = that.temp[name].concat(json);
           downcounter.progress--;
           if (downcounter.progress == 0){
               that.linkTemp()
               that.setState(that.temp);
           }
-        });
-    }
+        })
 
     componentDidMount() {
        debug(this.props);
-       this.getJsonResources(this.props.resources);
+    }
+
+    componentDidUpdate() {
+        if (!this.state.items && this.state.loadJson) {
+            this.setState({loadJson: false});
+            this.getJsonResources(this.props.resources);
+        }
     }
 
     render() {
-        if (!this.state.items) return <Home />;
-        const style = { minHeight: (window.innerHeight - 46), paddingTop:1 };
+        const style = {
+            minHeight: (window.innerHeight - 46),
+            paddingTop: 1,
+        };
         return (
             <div>
                 <div style={style}>
                     <Switch>
                         <Menu />
                     </Switch>
+                    {/* Loading part */}
+                    { !this.state.items && <Loading
+                        progress={this.state.progress}
+                        maxProgress={this.state.maxProgress}
+                    />}
                     <Switch>
                         <Route exact path='/' component={Home}/>
                         <PropsRoute path='/items' component={ItemsPage} data = { this.state.items }/>
