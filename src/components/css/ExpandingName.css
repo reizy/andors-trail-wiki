@@ -1,0 +1,15 @@
+.expandedLink {
+    text-align: left;
+}
+
+.expandedText {
+    /* margin-left: 10;
+    white-space: 'nowrap';
+    overflow: 'hidden'; */
+    text-overflow: 'ellipsis';
+}
+
+.expandedTable {
+    padding-top: 10px;
+    margin-left: -10px;
+}

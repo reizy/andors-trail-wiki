@@ -60,7 +60,7 @@ div.rgt-cell-header-inner {
     padding-right: 1px;
 }
 
-.nps-location-cell {
+.npc-location-cell {
     text-transform: capitalize;
     display: flex;
     margin: 10px;
@@ -153,7 +153,7 @@ a {
     color: white;
 }
 
-.nps-location-cell {
+.npc-location-cell {
     color: white;
 }
 

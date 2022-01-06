@@ -13,10 +13,10 @@ export default class MonstersPage extends React.Component {
         return (
             <div>
                 <ul className="hr">
-                        {LiLink("/npc/", "merchant", this.props.location.pathname)}
-                        {LiLink("/npc/", "A-G", this.props.location.pathname)}
-                        {LiLink("/npc/", "H-R", this.props.location.pathname)}
-                        {LiLink("/npc/", "S-Z", this.props.location.pathname)}
+                    {LiLink("/npc/", "merchant", this.props.location.pathname)}
+                    {LiLink("/npc/", "A-G", this.props.location.pathname)}
+                    {LiLink("/npc/", "H-R", this.props.location.pathname)}
+                    {LiLink("/npc/", "S-Z", this.props.location.pathname)}
                 </ul>
                 <Switch>
                     <PropsRoute  path="/npc/a-g" component={NpcTable}

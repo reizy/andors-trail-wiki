@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Icon from '../Icon';
+import { HashLink as Link } from 'react-router-hash-link';
 
 export default class Table extends React.Component {
 
@@ -58,6 +59,6 @@ const RenderRow = (props) => {
 }
 const RenderHref = (o) => {
     const href = o.rootLink + o.id;
-    return  <a href={href}>{o.name}</a>
+    return <Link to={href}>{o.name}</Link>
 
 }
