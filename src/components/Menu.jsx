@@ -11,7 +11,9 @@ export default class Main extends React.Component {
         return (
             <menu>
                 <ul className="hr">
-                     <li className={(window.location.pathname=="/")?"selected":""}><Link to="">Home</Link></li>
+                    <li className={window.location.pathname === "/" ? "selected" : ""}>
+                        <Link to="">Home</Link>
+                    </li>
                     {LiLink("items", "/body")}
                     {LiLink("monsters", "/animal")}
                     {LiLink("NPC", "/merchant")}

@@ -1,0 +1,35 @@
+.content {
+    padding: 0px 40px;
+}
+
+.loading-base {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+.loading-container {
+    width: 50%;
+}
+
+/* Progress bar is from https://codepen.io/traf/pen/oKbaqQ, Author: Traf */
+.progress {
+    background: rgba(255,255,255,0.1);
+    justify-content: flex-start;
+    border-radius: 100px;
+    align-items: center;
+    position: relative;
+    padding: 0 5px;
+    display: flex;
+    height: 20px;
+    width: '100%';
+}
+
+.progress-value {
+    box-shadow: 0 10px 40px -10px #fff;
+    border-radius: 100px;
+    background: #fff;
+    height: 30px;
+    width: 0;
+    transition: .1s;
+}

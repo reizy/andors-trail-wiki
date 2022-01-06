@@ -7,19 +7,13 @@ export default class ItemsPage extends React.Component {
     }
 
     render() {
-        if (!this.props.data) return "Loading...";
         return ( 
-                 <div>
-                     Positive
-                     {
-                         <ConditionsTable data = { this.props.data.filter((e)=>e.isPositive)} />
-                     }
-                     <br/>
-                     Negative
-                     {
-                         <ConditionsTable data = { this.props.data.filter((e)=>!e.isPositive)}  />
-                     }
-                 </div> 
-               );
+            <div>
+                <h2>Positive</h2>
+                <ConditionsTable data = { this.props.data.filter((e)=>e.isPositive)} />
+                <h2>Negative</h2>
+                <ConditionsTable data = { this.props.data.filter((e)=>!e.isPositive)} />
+            </div> 
+        );
     }
 }

@@ -12,7 +12,6 @@ export default class ItemsPage extends React.Component {
     }
 
     render() {
-        if (!this.props.data) return "Loading...";
         return (
             <div>
                 <ul className="hr">

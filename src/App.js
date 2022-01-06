@@ -86,7 +86,12 @@ function App() {
 
   return (
     <div className="App">
-        { data.resources && <Main resources = { data.resources } maps = { data.maps } globalMap = { data.globalMap }/> }
+        {/* { data.resources && <Main resources = { data.resources } maps = { data.maps } globalMap = { data.globalMap }/> } */}
+        <Main
+          resources = { data.resources }
+          maps = { data.maps }
+          globalMap = { data.globalMap }
+        />
     </div>
   );
 }
