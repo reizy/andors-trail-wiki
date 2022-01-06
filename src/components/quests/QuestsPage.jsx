@@ -8,7 +8,6 @@ export default class ItemsPage extends React.Component {
     }
 
     render() {
-        if (!this.props.data) return "";
         return (
             <div>
                
@@ -18,7 +17,7 @@ export default class ItemsPage extends React.Component {
                     />
 
             </div> 
-               );
+        );
     }
 }
 
