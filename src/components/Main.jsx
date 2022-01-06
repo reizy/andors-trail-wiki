@@ -83,7 +83,6 @@ export default class Main extends React.Component {
         await Promise.all(jsonResourcList.map(([loadResource, resourceName]) =>
             this.getJsonResource(loadResource, resourceName, downcounter)
         ));
-        console.log('well done');
     }
 
     getJsonResource = async (resource, name, downcounter) => {
@@ -478,26 +477,30 @@ export default class Main extends React.Component {
                 <div className="content" style={style}>
                     {/* Loading part */}
                     {
-                        !this.state.items ?
+                        !this.state.items ? (
                         <Loading
                             progress={this.state.progress}
                             maxProgress={this.state.maxProgress}
-                        /> : (
-                        <Switch>
-                            <Menu />
-                        </Switch>
+                        />
+                    ) : (
+                        <div>
+                            <Switch>
+                                <Menu />
+                            </Switch>
+                            <Switch>
+                                <Route exact path='/' component={Home}/>
+                                <PropsRoute path='/items' component={ItemsPage} data = { this.state.items }/>
+                                <PropsRoute path='/conditions' component={ConditionsPage} data = { this.state.actorconditions }/>
+                                <PropsRoute path='/monsters' component={MonstersPage} data = { this.state.monsters }/>
+                                <PropsRoute path='/categories' component={ItemCategoriesTable} data = { this.state.itemcategories }/> 
+                                <PropsRoute path='/npc' component={NpcPage} data = { this.state.monsters }/> 
+                                <PropsRoute path='/quests' component={QuestsPage} data = { this.state.quests }/> 
+                                <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }
+                                    expanded={this.state.expandedSubMenu} toggleExpand={this.toggleExpandSubMenu}/> 
+                            </Switch>
+                        </div>
                     )}
-                    <Switch>
-                        <Route exact path='/' component={Home}/>
-                        <PropsRoute path='/items' component={ItemsPage} data = { this.state.items }/>
-                        <PropsRoute path='/conditions' component={ConditionsPage} data = { this.state.actorconditions }/>
-                        <PropsRoute path='/monsters' component={MonstersPage} data = { this.state.monsters }/>
-                        <PropsRoute path='/categories' component={ItemCategoriesTable} data = { this.state.itemcategories }/> 
-                        <PropsRoute path='/npc' component={NpcPage} data = { this.state.monsters }/> 
-                        <PropsRoute path='/quests' component={QuestsPage} data = { this.state.quests }/> 
-                        <PropsRoute path='/map' component={MapPage} data = { this.props.maps } globalMap = { this.props.globalMap }
-                            expanded={this.state.expandedSubMenu} toggleExpand={this.toggleExpandSubMenu}/> 
-                    </Switch>
+                    
                 </div>
                 <div className="signature">
                     <div style={{float:'left'}}>
