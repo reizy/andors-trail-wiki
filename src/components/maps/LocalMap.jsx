@@ -45,13 +45,15 @@ export default class MonstersPage extends React.Component {
                     left: row.x + getRandomInt(row.width - 32), 
                     top: row.y + getRandomInt(row.height - 32),
                 };
-                const monster = link.monsters[index%link.monsters.length];
-                const key = monster.id+"_"+index;
-                result.push(
-                    <div key ={key} style={style} className={className} title={monster.name}>
-                        <Icon data={monster} zoom={zoom} noBackground="true" />
-                    </div>
-                )
+                var monster = link.monsters[index%link.monsters.length];
+                if (monster) {
+                    const key = monster.id+"_"+index;
+                    result.push(
+                        <div key ={key} style={style} className={className} title={monster.name}>
+                            <Icon data={monster} zoom={zoom} noBackground="true" />
+                        </div>
+                    )
+                }
             }
             return result;
         })
