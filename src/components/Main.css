@@ -33,3 +33,15 @@
     width: 0;
     transition: .1s;
 }
+.GlobalMap {
+    position: relative;
+}
+.GlobalMap a {
+    position: absolute;
+    background-color: green;
+}
+.GlobalMap a img{
+    position: absolute;
+    left: 0;
+    top: 0;
+}

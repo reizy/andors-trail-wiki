@@ -14,8 +14,6 @@ export default class MonstersPage extends React.Component {
  
         return maps.map((row, index)=>{
             var style = {
-                position: 'absolute',
-                backgroundColor: 'green',
                 left: (row.x - data.x) * zoom,
                 top: (row.y - data.y) * zoom,
                 width: row.link.width * zoom,
@@ -51,10 +49,10 @@ export default class MonstersPage extends React.Component {
                     (data.maps.length >   3) ? 8 :
                     10;
 
-       const style = { position:'relative', height:(data.height * zoom)};
+       const style = { height:(data.height * zoom)};
 
        return (
-            <div style={style}>
+            <div style={style} class="GlobalMap">
                 {this.getRowsData(data, zoom)}
             </div>
        );
