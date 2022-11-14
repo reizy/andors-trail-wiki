@@ -508,7 +508,7 @@ export default class Main extends React.Component {
                     <div style={{float:'left'}}>
                         2022, Powered by <a href="https://github.com/reizy/andors-trail-wiki">Reizy</a>
                     </div>
-                    <div style={{float:'right'}}>Game version 0.8.2</div>
+                    <div style={{float:'right'}}>Game version 0.8.3</div>
                 </div>
             </div> 
         );
