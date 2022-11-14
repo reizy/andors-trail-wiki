@@ -195,7 +195,7 @@ export default class Table extends React.Component {
                 id: i++,
                 field: 'equipEffect',
                 label: 'Dmg*%',
-                getValue: ({value, column}) => value?.setNonWeaponDamageModifier,
+                getValue: ({value, column}) => value?.setNonWeaponDamageModifier||100,
                 sort:sortInt,
                 width: '75px',
                 visible: this.isEmptyColumn((item)=>item.equipEffect?.setNonWeaponDamageModifier),
