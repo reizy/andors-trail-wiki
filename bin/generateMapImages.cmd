@@ -10,6 +10,7 @@ IF EXIST "%dp0%\node.exe" (
 )
 
 "%_prog%"  "%dp0%\generateMapImages.js" %*
+"%_prog%"  "%dp0%\getVersion.js" %*
 ENDLOCAL
 EXIT /b %errorlevel%
 :find_dp0
