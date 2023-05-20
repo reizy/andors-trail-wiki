@@ -15,10 +15,16 @@ export default class Table extends React.Component {
             ["", (o)=> {return <Icon data={o.monster} />;}],
             ["Name", (o)=>{return RenderHref(o.monster)}, { textAlign: 'left'} ],
             ["Quantity",(o)=>{return Range(o.quantity)}],
-            ["Chance",(o)=>{return o.type ||(o.monster.maxHP?(o.chance+"%"):"sell")}],
+            ["Chance",(o)=>{return o.type ||(o.monster.maxHP?(this.renderChance(o.chance)):"sell")}],
         ];
     }
-
+    renderChance = function (chance) {
+        if (chance.indexOf("/") > 0) {
+            return chance;
+        } else {
+            return chance + "%";
+        }
+    }
     getHeader = function () {
         var keys = this.getKeys();
         return keys.map((key, index) => {
