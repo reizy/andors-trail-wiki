@@ -219,7 +219,7 @@ export default class Table extends React.Component {
             },
             {
                 id: i++,
-                field: 'baseMarketCost',
+                field: 'priceCost',
                 label: 'Price',
                 sort:sortInt,
                 width: '60px',

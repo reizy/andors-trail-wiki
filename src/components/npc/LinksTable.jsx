@@ -15,7 +15,7 @@ export default class Table extends React.Component {
             ["", (o)=> {return <Icon data={o.link} />;}, { width: 40}],
             ["Name", (o)=>{return RenderHref(o.link)}, { textAlign: 'left', width: 250} ],
             ["Quantity",(o)=>{return Range(o.quantity)}, { width: 40}],
-            ["Price",(o)=>{return calculateCostWithMod(o.link, 0.15)+" gold"}, { textAlign: 'right'}],
+            ["Price",(o)=>{return o.link.priceCost+" gold"}, { textAlign: 'right'}],
             ["Buy",(o)=>{return calculateCostWithMod(o.link, -0.15)+" gold"}, { textAlign: 'right'}],
         ];
     }

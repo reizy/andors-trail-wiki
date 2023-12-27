@@ -325,6 +325,7 @@ export default class Main extends React.Component {
                 item.categoryLink = this.temp.maps.categories[item.category];
                 item.rootLink=this.getItemRootLink(item.categoryLink);
                 item.baseMarketCost=calculateCost(item, item.categoryLink.inventorySlot=="weapon");
+                item.priceCost = item.baseMarketCost + Math.trunc(item.baseMarketCost * 0.15);
 
                 item.conditionsCount = this.countConditions(item.equipEffect)
                     + this.countConditions(item.hitEffect)

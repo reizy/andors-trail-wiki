@@ -61,10 +61,6 @@ const Range = (o) => {
     if (o.max == o.min) return o.max;
     return o.min + "-" + o.max;
 }
-const calculateCostWithMod = (o, mod) => {
-    const cost = o.baseMarketCost;
-    return cost + Math.trunc(cost * mod);
-}
 const IconCell = (data) => {
     const href = (data.rootLink) + data.id;
     return <Link to={href}><img title={data.id} src="/image/ui_icon_quest.png"/></Link>
