@@ -10,6 +10,9 @@ const ZOOM_OUT = 12;
 var counter = 0;
 var counterSize = 0;
 
+// cache of image, key is string from tileset.name, value is Image from node-canvas
+var imageCache = {};
+
 function saveCanvas(canvas, fileName) {
     counter++;
     console.log(`[${counter}/${counterSize}] ${fileName}`);
@@ -20,19 +23,22 @@ function saveCanvas(canvas, fileName) {
 function drawCell(context, x, y, cell, layerList, thenDo) {
     layerList.forEach((e) => drawCellLayer(context, x, y, cell[e.name], thenDo));
 }
-function drawCellLayer(context, x, y, cell, thenDo) {
+async function drawCellLayer(context, x, y, cell, thenDo) {
     if (!cell) return thenDo();
 
     const tileset = cell.tileset;
 
+    if (!(tileset.name in imageCache)) {
+        const image = await loadImage('./public/drawable/' + tileset.name + '.png');
+        imageCache[tileset.name] = image;
+    }
 
-    loadImage('./public/drawable/' + tileset.name + '.png').then(image => {
-      const dx = cell.localid % tileset.columns;
-      const dy = Math.floor(cell.localid / tileset.columns);
+    const dx = cell.localid % tileset.columns;
+    const dy = Math.floor(cell.localid / tileset.columns);
+    const image = imageCache[tileset.name];
 
-      context.drawImage(image, dx * ZOOM, dy * ZOOM, ZOOM, ZOOM, x * ZOOM_OUT, y * ZOOM_OUT, ZOOM_OUT, ZOOM_OUT)
-      thenDo();
-    })
+    context.drawImage(image, dx * ZOOM, dy * ZOOM, ZOOM, ZOOM, x * ZOOM_OUT, y * ZOOM_OUT, ZOOM_OUT, ZOOM_OUT);
+    thenDo();
 }
 function drawCanvas(fileName, map) {
     const width = map.width * ZOOM_OUT;
