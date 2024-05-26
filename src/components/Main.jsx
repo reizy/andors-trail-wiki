@@ -24,7 +24,7 @@ function Loading (props) {
         <div className='loading-base'>
             <div className='loading-container'>
                 { props.progress === undefined ? (
-                    <h3>Loading TMS...</h3>
+                    <h3>Loading TMX...</h3>
                 ) : (
                     <div>
                         <div className="progress">
