@@ -52,7 +52,7 @@ export default class MonstersPage extends React.Component {
        const style = { height:(data.height * zoom)};
 
        return (
-            <div style={style} class="GlobalMap">
+            <div style={style} className="GlobalMap">
                 {this.getRowsData(data, zoom)}
             </div>
        );
