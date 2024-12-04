@@ -7,12 +7,11 @@ const {parseXmlMap}  = require('./mapParser.js');
 const ZOOM = 32;
 const ZOOM_OUT = 12;
 
-var counter = 0;
+var counter = 1;
 var counterSize = 0;
 
 function saveCanvas(canvas, fileName) {
     counter++;
-    console.log(`[${counter}/${counterSize}] ${fileName}`);
     const buffer = canvas.toBuffer('image/jpeg', { quality: 0.8 })
     fs.writeFileSync('./public/backgrounds/' + fileName +'.jpg', buffer)
 }
@@ -22,9 +21,9 @@ function drawCell(context, x, y, cell, layerList, thenDo) {
 }
 function drawCellLayer(context, x, y, cell, thenDo) {
     if (!cell) return thenDo();
-
+    //console.debug("["+x+","+y+"]"+JSON.stringify(cell));
     const tileset = cell.tileset;
-
+    if (!tileset) return thenDo();
 
     loadImage('./public/drawable/' + tileset.name + '.png').then(image => {
       const dx = cell.localid % tileset.columns;
@@ -79,6 +78,7 @@ function getXmlData(fileName, thenDo) {
 const getXmlMap=(name) => {
     const resource = "./public/xml/" + name + ".tmx";
     const thenDo = (xmlString) => {
+        console.log(`[${counter}/${counterSize}] ${name}`);
         var parser = new XMLParser();
         var myXml = parser.parseFromString(xmlString);
 
@@ -88,14 +88,24 @@ const getXmlMap=(name) => {
     getXmlData(resource, thenDo);
 }
 
-const generateAll = (tmxFolder) => {
+const generateAll = (tmxFolder, force) => {
 
     fs.readdir(tmxFolder, (err, files) => {
         counterSize = files.length;
         files.forEach((file, i) => {
             fileName = file.split('.');
             if (fileName[1] == 'tmx') {
-                getXmlMap(fileName[0]);
+                if (force == false){
+                  const exists = fs.existsSync('./public/backgrounds/' + fileName[0] +'.jpg')
+                  if (exists) {
+                    console.log(`[${counter}/${counterSize}] ${fileName[0]} `, ' - ');
+                    counter++
+                  } else {
+                    getXmlMap(fileName[0]);
+                  }
+                } else {
+                  getXmlMap(fileName[0]);
+                }
             }
       });
     });
@@ -105,11 +115,13 @@ const tmxFolder = './public/xml/';
 
 var args = process.argv.filter((e,i) => (i >= 2));
 
-if (args.length) {
+if (args.length == 0) {
+    generateAll(tmxFolder, true)
+} else if ((args.length == 1) && (args[0]=="false")) {
+    generateAll(tmxFolder, false)
+} else {
     counterSize = args.length;
     args.forEach((e, i) => getXmlMap(e));
-} else {
-    generateAll(tmxFolder)
 }
 /**/
 
